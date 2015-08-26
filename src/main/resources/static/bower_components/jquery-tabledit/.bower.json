@@ -1,0 +1,33 @@
+{
+  "name": "markcell/jquery-tabledit",
+  "version": "1.2.3",
+  "description": "Inline editor for HTML tables compatible with Bootstrap.",
+  "main": "jquery.tabledit.js",
+  "license": "MIT",
+  "homepage": "http://markcell.github.io/jquery-tabledit",
+  "keywords": [
+    "html",
+    "table",
+    "edit",
+    "bootstrap",
+    "spreadsheet",
+    "inline",
+    "editor"
+  ],
+  "ignore": [
+    "*.md",
+    "*.php"
+  ],
+  "dependencies": {
+    "jquery": "jquery/jquery"
+  },
+  "_release": "1.2.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.2.3",
+    "commit": "9a8f4883e8d9521c3c13c990140765f1a26aae1b"
+  },
+  "_source": "git://github.com/markcell/jquery-tabledit.git",
+  "_target": "*",
+  "_originalSource": "jquery-tabledit"
+}

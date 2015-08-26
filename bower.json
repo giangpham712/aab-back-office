@@ -1,0 +1,31 @@
+{
+  "name": "AAB Back Office Application",
+  "dependencies": {
+    "jquery": "1.9.1",
+    "jquery-icheck": "latest",
+    "jquery-slimscroll": "latest",
+    "moment": "latest",
+    "bootstrap": "~3.3.0",
+    "bootstrap-3-datepicker": "~1.4.0",
+    "bootstrap3-datetimepicker": "latest",
+    "ladda-bootstrap": "latest",
+    "underscore": "latest",
+    "angular": "~1.4.0",
+    "angular-ui-router": "0.2.15",
+    "angular-resource": "~1.4.0",
+    "restangular": "latest",
+    "angular-utils-pagination": "latest",
+    "ngstorage": "~0.3.0",
+    "font-awesome": "latest",
+    "select2": "latest",
+    "autoNumeric": "latest",
+    "metisMenu": "2.0.2",
+    "typeahead.js": "~0.11.1",
+    "bootstrap3-typeahead": "~3.1.1",
+    "selectize": "~0.12.1",
+    "angular-selectize2": "~1.2.1",
+    "tv4": "~1.1.12",
+    "toastr": "~2.1.1",
+    "messenger": "~1.4.2"
+  }
+}
