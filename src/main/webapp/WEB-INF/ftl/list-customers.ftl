@@ -60,7 +60,10 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" placeholder="Find a customer or company"/>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Filter by display name or company name"/>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                    </div>
                 </div>
             </div>
             <table id="customers" class="table table-hover">
@@ -82,7 +85,10 @@
                         <small ng-bind="customer.companyName"></small>
                     </td>
                     <td><span ng-bind="customer.email"></span></td>
-                    <td></td>
+                    <td>
+                        <button type="button" class="btn btn-link"
+                                ng-click="showEditCustomer($index)">Edit</button>
+                    </td>
                 </tr>
                 </tbody>
 
@@ -91,7 +97,7 @@
         </div>
 
     </div>
-    <#include "partials/new-customer.ftl">
+    <#include "partials/modal-edit-customer.ftl">
 </div>
 
 </@layout.admin>

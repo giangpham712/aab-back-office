@@ -1,0 +1,1 @@
+INSERT INTO `users` VALUES (1,'wade712vn@gmail.com','Administrator','$2a$10$mHd1NeWf/u5qQK15ovEG7.OviyTwwP2MA6EdrXOkLsPN/f5WSPMeC','ADMIN','admin');

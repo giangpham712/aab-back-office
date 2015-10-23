@@ -1,10 +1,9 @@
 package com.aabplastic.backoffice.services;
 
-import com.aabplastic.backoffice.models.Estimate;
-import com.aabplastic.backoffice.models.Order;
-import com.aabplastic.backoffice.models.OrderItem;
+import com.aabplastic.backoffice.models.*;
 import com.aabplastic.backoffice.models.dto.EstimateDto;
 import com.aabplastic.backoffice.models.dto.OrderDto;
+import com.aabplastic.backoffice.models.dto.WorkOrderDto;
 import com.aabplastic.backoffice.repositories.EstimateRepository;
 import com.aabplastic.backoffice.repositories.OrderRepository;
 import ma.glasnost.orika.MapperFactory;
@@ -26,13 +25,10 @@ public class OrderServiceImpl implements OrderService {
     private EstimateRepository estimateRepository;
 
     @Override
-    public OrderDto create(OrderDto orderDto) {
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-        Order order = mapperFactory.getMapperFacade().map(orderDto, Order.class);
+    public Order create(Order order) {
 
         Date now = new Date();
 
-        order.setCustomerId(orderDto.getCustomerId());
         order.setCreatedAt(now);
         order.setUpdatedAt(now);
 
@@ -44,15 +40,14 @@ public class OrderServiceImpl implements OrderService {
         });
 
         order = orderRepository.save(order);
-        return mapperFactory.getMapperFacade().map(order, OrderDto.class);
+        return order;
     }
 
     @Override
-    public OrderDto update(long id, OrderDto orderDto) {
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-        Order putOrder = mapperFactory.getMapperFacade().map(orderDto, Order.class);
+    public Order update(long id, Order putOrder) {
+
         List<OrderItem> putOrderItems = putOrder.getItems();
-        Map<Long, OrderItem> map1 = putOrderItems.stream().collect(Collectors.toMap(OrderItem::getId, Function.identity()));
+        Map<Long, OrderItem> map1 = putOrderItems.stream().filter(x -> x.getId() != 0).collect(Collectors.toMap(OrderItem::getId, Function.identity()));
 
         Date now = new Date();
 
@@ -62,15 +57,6 @@ public class OrderServiceImpl implements OrderService {
 
         Set<Long> ids = new HashSet<Long>();
 
-        // Add new items
-        putOrderItems.stream().filter(x -> !map2.containsKey(x.getId())).forEach(y -> {
-            order.getItems().add(y);
-            y.setOrder(order);
-            y.setCreatedAt(now);
-            y.setUpdatedAt(now);
-
-            ids.add(y.getId());
-        });
 
         // Remove items
         orderItems.stream()
@@ -81,6 +67,16 @@ public class OrderServiceImpl implements OrderService {
 
                     ids.add(y.getId());
                 });
+
+        // Add new items
+        putOrderItems.stream().filter(x -> !map2.containsKey(x.getId())).forEach(y -> {
+            order.getItems().add(y);
+            y.setOrder(order);
+            y.setCreatedAt(now);
+            y.setUpdatedAt(now);
+
+            ids.add(y.getId());
+        });
 
         // Update items
         orderItems.stream()
@@ -95,6 +91,10 @@ public class OrderServiceImpl implements OrderService {
                     y.setFilmColor(putOrderItem.getFilmColor());
                     y.setLength(putOrderItem.getLength());
                     y.setMaterial(putOrderItem.getMaterial());
+                    y.setHandleLength(putOrderItem.getHandleLength());
+                    y.setHandleRatio(putOrderItem.getHandleRatio());
+                    y.setHandleWidth(putOrderItem.getHandleWidth());
+                    y.setEmboss(putOrderItem.getEmboss());
                     y.setOuterbagPrinting(putOrderItem.getOuterbagPrinting());
                     y.setPiecesPerCarton(putOrderItem.getPiecesPerCarton());
                     y.setPiecesPerOuterbag(putOrderItem.getPiecesPerOuterbag());
@@ -108,31 +108,28 @@ public class OrderServiceImpl implements OrderService {
 
                 });
 
-        order.setCustomerId(orderDto.getCustomerId());
-        order.setOrderDate(orderDto.getOrderDate());
-        order.setEstimatedTimeOfArrival(orderDto.getEstimatedTimeOfArrival());
-        order.setEstimatedTimeOfDeparture(orderDto.getEstimatedTimeOfDeparture());
+        order.setCustomerId(putOrder.getCustomerId());
+        order.setOrderDate(putOrder.getOrderDate());
+        order.setEstimatedTimeOfArrival(putOrder.getEstimatedTimeOfArrival());
+        order.setEstimatedTimeOfDeparture(putOrder.getEstimatedTimeOfDeparture());
 
         order.setUpdatedAt(now);
 
+        order.setTotal(putOrder.getTotal());
+
         Order updatedOrder = orderRepository.save(order);
 
-        return mapperFactory.getMapperFacade().map(updatedOrder, OrderDto.class);
+        return updatedOrder;
     }
 
-    @Override
-    public Iterable<OrderDto> getAllOrders() {
 
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-        mapperFactory.classMap(Order.class, OrderDto.class)
-                .exclude("items")
-                .byDefault()
-                .register();
+
+    @Override
+    public Iterable<Order> getAllOrders() {
 
         List<Order> orders = orderRepository.findAll();
-        List<OrderDto> result = mapperFactory.getMapperFacade().mapAsList(orders, OrderDto.class);
 
-        return result;
+        return orders;
     }
 
     @Override
@@ -160,7 +157,12 @@ public class OrderServiceImpl implements OrderService {
         estimate.getItems().forEach(x -> {
             x.setEstimate(finalEstimate);
             x.setId(0);
-            x.getCostItems().forEach(y -> {
+            x.getMaterials().forEach(y -> {
+                y.setId(0);
+                y.setEstimateItem(x);
+            });
+
+            x.getExpenses().forEach(y -> {
                 y.setId(0);
                 y.setEstimateItem(x);
             });
@@ -169,6 +171,87 @@ public class OrderServiceImpl implements OrderService {
         estimate = estimateRepository.save(estimate);
 
         return mapperFactory.getMapperFacade().map(estimate, EstimateDto.class);
+    }
+
+    @Override
+    public EstimateDto updateEstimate(long id, EstimateDto estimateDto) {
+
+        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+        Estimate putEstimate = mapperFactory.getMapperFacade().map(estimateDto, Estimate.class);
+
+        List<EstimateItem> putEstimateItems = putEstimate.getItems();
+        Map<Long, EstimateItem> map1 = putEstimateItems.stream().filter(x -> x.getId() != 0).collect(Collectors.toMap(EstimateItem::getId, Function.identity()));
+
+        Estimate estimate = estimateRepository.findOne(id);
+        List<EstimateItem> estimateItems = estimate.getItems();
+
+        estimateItems.stream().forEach(estimateItem -> {
+
+            EstimateItem putEstimateItem = map1.get(estimateItem.getId());
+
+            estimateItem.setActualPricePerWeightUnit(putEstimateItem.getActualPricePerWeightUnit());
+            estimateItem.setActualThickness(putEstimateItem.getActualThickness());
+            estimateItem.setActualTotalWeight(putEstimateItem.getActualTotalWeight());
+            estimateItem.setActualUnitWeight(putEstimateItem.getActualUnitWeight());
+            estimateItem.setBlowingWidth(putEstimateItem.getBlowingWidth());
+
+            List<EstimateItemMaterial> putMaterials = putEstimateItem.getMaterials();
+            Map<Long, EstimateItemMaterial> map11 = putMaterials.stream().filter(x -> x.getId() != 0).collect(Collectors.toMap(EstimateItemMaterial::getId, Function.identity()));
+
+            List<EstimateItemMaterial> savedMaterials = estimateItem.getMaterials();
+            Map<Long, EstimateItemMaterial> map22 = savedMaterials.stream().collect(Collectors.toMap(EstimateItemMaterial::getId, Function.identity()));
+
+            Set<Long> ids = new HashSet<>();
+
+            // Remove items
+            savedMaterials.stream()
+                    .filter(x -> !map11.containsKey(x.getId()))
+                    .sorted((o1, o2) -> (int) (o1.getId() - o2.getId()))
+                    .forEach(x -> {
+                        estimateItem.getMaterials().remove(x);
+
+                        ids.add(x.getId());
+                    });
+
+            // Add new items
+            putMaterials.stream().filter(x -> !map22.containsKey(x.getId())).forEach(x -> {
+                estimateItem.getMaterials().add(x);
+                x.setEstimateItem(estimateItem);
+                ids.add(x.getId());
+            });
+
+            // Update items
+            savedMaterials.stream()
+                    .filter(x -> !ids.contains(x.getId()))
+                    .forEach(x -> {
+                        EstimateItemMaterial estimateItemMaterial = map11.get(x.getId());
+
+                        x.setQuantity(estimateItemMaterial.getQuantity());
+                        x.setCostPerWeightUnit(estimateItemMaterial.getCostPerWeightUnit());
+                        x.setTotal(estimateItemMaterial.getTotal());
+                        x.setItemId(estimateItemMaterial.getItemId());
+
+                    });
+
+            estimateItem.setGusset(putEstimateItem.getGusset());
+            estimateItem.setHandleRatio(putEstimateItem.getHandleRatio());
+            estimateItem.setLength(putEstimateItem.getLength());
+            estimateItem.setPricePerWeightUnit(putEstimateItem.getPricePerWeightUnit());
+            estimateItem.setQuantity(putEstimateItem.getQuantity());
+            estimateItem.setThickness(putEstimateItem.getThickness());
+            estimateItem.setTotal(putEstimateItem.getTotal());
+            estimateItem.setTotalCost(putEstimateItem.getTotalCost());
+            estimateItem.setTotalWeight(putEstimateItem.getTotalWeight());
+            estimateItem.setUnitWeight(putEstimateItem.getUnitWeight());
+            estimateItem.setWidth(putEstimateItem.getWidth());
+        });
+
+        Date now = new Date();
+        estimate.setUpdatedAt(now);
+
+        Estimate updatedEstimate = estimateRepository.save(estimate);
+
+        return mapperFactory.getMapperFacade().map(updatedEstimate, EstimateDto.class);
     }
 
     @Override
@@ -198,5 +281,15 @@ public class OrderServiceImpl implements OrderService {
 
         EstimateDto estimateDto = mapperFactory.getMapperFacade().map(estimate, EstimateDto.class);
         return estimateDto;
+    }
+
+    @Override
+    public WorkOrderDto getWorkOrderByOrderId(long orderId) {
+        return null;
+    }
+
+    @Override
+    public WorkOrderDto createWorkOrder(WorkOrderDto workOrderDto) {
+        return null;
     }
 }

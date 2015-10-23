@@ -16,7 +16,7 @@ apply plugin: 'application'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
-apply plugin: 'io.spring.dependency-management'
+
 apply plugin: 'war'
 
 applicationDefaultJvmArgs = [
@@ -62,11 +62,21 @@ dependencies {
     compile("org.slf4j:jcl-over-slf4j:1.7.12")
     compile("ma.glasnost.orika:orika-core:1.4.6")
     compile("mysql:mysql-connector-java:5.1.28")
+    compile("com.google.guava:guava:18.0")
+
+    compile 'org.apache.poi:poi:3.9'
+    compile 'org.slf4j:slf4j-api:1.7.12'
+    compile 'org.jxls:jxls:2.2.5'
+    compile 'org.jxls:jxls-poi:1.0.5'
+
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     testCompile("org.springframework.boot:spring-boot-starter-test") {
         exclude module: "spring-boot-starter-logging"
         exclude module: "logback-classic"
     }
+
+    testCompile('junit:junit:4.12')
+    testCompile('org.mockito:mockito-core:1.9.5')
 }
 
 

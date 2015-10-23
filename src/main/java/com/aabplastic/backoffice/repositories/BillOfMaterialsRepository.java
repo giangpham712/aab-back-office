@@ -7,6 +7,4 @@ import java.util.List;
 
 public interface BillOfMaterialsRepository extends JpaRepository<BillOfMaterials, Long> {
 
-    List<BillOfMaterials> findByItemId(long id);
-
 }

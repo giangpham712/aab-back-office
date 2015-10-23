@@ -1,5 +1,7 @@
 package com.aabplastic.backoffice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -23,6 +25,18 @@ public class OrderItem {
     @Column(name = "length", nullable = false)
     private double length;
 
+    @Column(name = "emboss", nullable = false)
+    private String emboss;
+
+    @Column(name = "handle_length", nullable = false)
+    private double handleLength;
+
+    @Column(name = "handle_width", nullable = false)
+    private double handleWidth;
+
+    @Column(name = "handle_ratio", nullable = false)
+    private double handleRatio;
+
     @Column(name = "material", nullable = false)
     private String material;
 
@@ -39,7 +53,7 @@ public class OrderItem {
     private String outerbagPrinting;
 
     @Column(name = "pieces_per_outerbag", nullable = false)
-    private String piecesPerOuterbag;
+    private int piecesPerOuterbag;
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
@@ -62,16 +76,26 @@ public class OrderItem {
     @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @Column(name = "item_id", nullable = false)
-    private long itemId;
+    @Column(name = "product_id", nullable = false)
+    private long productId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false, insertable = false, updatable = false)
-    private Item item;
+    @JoinColumn(name = "product_id", nullable = false, insertable = false, updatable = false)
+    private Product product;
+
+    // Constructor
+
+    public OrderItem () {
+
+    }
+
+    // Setters and getters
 
     public long getId() {
         return id;
@@ -111,6 +135,38 @@ public class OrderItem {
 
     public void setLength(double length) {
         this.length = length;
+    }
+
+    public String getEmboss() {
+        return emboss;
+    }
+
+    public void setEmboss(String emboss) {
+        this.emboss = emboss;
+    }
+
+    public double getHandleLength() {
+        return handleLength;
+    }
+
+    public void setHandleLength(double handleLength) {
+        this.handleLength = handleLength;
+    }
+
+    public double getHandleWidth() {
+        return handleWidth;
+    }
+
+    public void setHandleWidth(double handleWidth) {
+        this.handleWidth = handleWidth;
+    }
+
+    public double getHandleRatio() {
+        return handleRatio;
+    }
+
+    public void setHandleRatio(double handleRatio) {
+        this.handleRatio = handleRatio;
     }
 
     public String getMaterial() {
@@ -153,11 +209,11 @@ public class OrderItem {
         this.outerbagPrinting = outerbagPrinting;
     }
 
-    public String getPiecesPerOuterbag() {
+    public int getPiecesPerOuterbag() {
         return piecesPerOuterbag;
     }
 
-    public void setPiecesPerOuterbag(String piecesPerOuterbag) {
+    public void setPiecesPerOuterbag(int piecesPerOuterbag) {
         this.piecesPerOuterbag = piecesPerOuterbag;
     }
 
@@ -225,19 +281,19 @@ public class OrderItem {
         this.order = order;
     }
 
-    public long getItemId() {
-        return itemId;
+    public long getProductId() {
+        return productId;
     }
 
-    public void setItemId(long itemId) {
-        this.itemId = itemId;
+    public void setProductId(long productId) {
+        this.productId = productId;
     }
 
-    public Item getItem() {
-        return item;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

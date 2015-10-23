@@ -1,5 +1,7 @@
 package com.aabplastic.backoffice.models.dto;
 
+import com.aabplastic.backoffice.enums.ItemType;
+
 public class EstimateItemCostItemDto {
 
     private long id;
@@ -11,6 +13,8 @@ public class EstimateItemCostItemDto {
     private double total;
 
     private long itemId;
+
+    private ItemType type;
 
     public long getId() {
         return id;
@@ -50,5 +54,13 @@ public class EstimateItemCostItemDto {
 
     public void setItemId(long itemId) {
         this.itemId = itemId;
+    }
+
+    public ItemType getType() {
+        return type;
+    }
+
+    public void setType(ItemType type) {
+        this.type = type;
     }
 }

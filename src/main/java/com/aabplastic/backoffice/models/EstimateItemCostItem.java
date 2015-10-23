@@ -1,6 +1,8 @@
 package com.aabplastic.backoffice.models;
 
 
+import com.aabplastic.backoffice.enums.ItemType;
+
 import javax.persistence.*;
 
 @Table(name = "estimate_item_cost_item")
@@ -22,6 +24,9 @@ public class EstimateItemCostItem {
 
     @Column(name = "item_id")
     private long itemId;
+
+    @Column(name = "type")
+    private ItemType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", nullable = false, insertable = false, updatable = false)
@@ -69,6 +74,14 @@ public class EstimateItemCostItem {
 
     public void setItemId(long itemId) {
         this.itemId = itemId;
+    }
+
+    public ItemType getType() {
+        return type;
+    }
+
+    public void setType(ItemType type) {
+        this.type = type;
     }
 
     public Item getItem() {

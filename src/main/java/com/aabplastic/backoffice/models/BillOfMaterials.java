@@ -1,6 +1,7 @@
 package com.aabplastic.backoffice.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,15 +16,11 @@ public class BillOfMaterials {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "description", nullable = true)
+    private String description;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "bill")
     private List<BillOfMaterialsItem> items;
-
-    @Column(name = "item_id", nullable = false)
-    private long itemId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false, insertable = false, updatable = false)
-    private Item item;
 
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
@@ -31,8 +28,15 @@ public class BillOfMaterials {
     @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
 
-    @Column(name = "default_bom", nullable = false)
-    private boolean defaultBOM;
+    public BillOfMaterials() {
+        items = new ArrayList<>();
+    }
+
+    public BillOfMaterials(String name, String description) {
+        this();
+        this.name = name;
+        this.description = description;
+    }
 
     public long getId() {
         return id;
@@ -50,28 +54,20 @@ public class BillOfMaterials {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public List<BillOfMaterialsItem> getItems() {
         return items;
     }
 
     public void setItems(List<BillOfMaterialsItem> items) {
         this.items = items;
-    }
-
-    public long getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(long itemId) {
-        this.itemId = itemId;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
     }
 
     public Date getCreatedAt() {
@@ -90,11 +86,4 @@ public class BillOfMaterials {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isDefaultBOM() {
-        return defaultBOM;
-    }
-
-    public void setDefaultBOM(boolean defaultBOM) {
-        this.defaultBOM = defaultBOM;
-    }
 }

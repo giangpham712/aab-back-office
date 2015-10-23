@@ -1,5 +1,8 @@
 package com.aabplastic.backoffice.configs;
 
+import com.aabplastic.backoffice.enums.Role;
+import com.aabplastic.backoffice.models.dto.UserDto;
+import com.aabplastic.backoffice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +31,6 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
 
         http
                 .authorizeRequests()

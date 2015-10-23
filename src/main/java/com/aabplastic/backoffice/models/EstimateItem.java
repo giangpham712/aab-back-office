@@ -1,5 +1,7 @@
 package com.aabplastic.backoffice.models;
 
+import com.aabplastic.backoffice.models.dto.EstimateItemExpense;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -29,7 +31,16 @@ public class EstimateItem {
     @Column(name = "length", nullable = false)
     private double length;
 
-    @Column(name = "handle_ratio", nullable = false)
+    @Column(name = "emboss", nullable = true)
+    private String emboss;
+
+    @Column(name = "handle_length", nullable = true)
+    private double handleLength;
+
+    @Column(name = "handle_width", nullable = true)
+    private double handleWidth;
+
+    @Column(name = "handle_ratio", nullable = true)
     private double handleRatio;
 
     @Column(name = "unit_weight")
@@ -59,12 +70,12 @@ public class EstimateItem {
     @Column(name = "total_cost")
     private double totalCost;
 
-    @Column(name = "item_id", nullable = false)
-    private long itemId;
+    @Column(name = "product_id", nullable = false)
+    private long productId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false, insertable = false, updatable = false)
-    private Item item;
+    @JoinColumn(name = "product_id", nullable = false, insertable = false, updatable = false)
+    private Product product;
 
     @Column(name = "order_item_id", nullable = false)
     private long orderItemId;
@@ -78,7 +89,10 @@ public class EstimateItem {
     private Estimate estimate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "estimateItem", cascade = CascadeType.ALL)
-    private List<EstimateItemCostItem> costItems;
+    private List<EstimateItemMaterial> materials;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "estimateItem", cascade = CascadeType.ALL)
+    private List<EstimateItemExpense> expenses;
 
     public long getId() {
         return id;
@@ -134,6 +148,30 @@ public class EstimateItem {
 
     public void setLength(double length) {
         this.length = length;
+    }
+
+    public String getEmboss() {
+        return emboss;
+    }
+
+    public void setEmboss(String emboss) {
+        this.emboss = emboss;
+    }
+
+    public double getHandleLength() {
+        return handleLength;
+    }
+
+    public void setHandleLength(double handleLength) {
+        this.handleLength = handleLength;
+    }
+
+    public double getHandleWidth() {
+        return handleWidth;
+    }
+
+    public void setHandleWidth(double handleWidth) {
+        this.handleWidth = handleWidth;
     }
 
     public double getHandleRatio() {
@@ -208,20 +246,20 @@ public class EstimateItem {
         this.totalCost = totalCost;
     }
 
-    public long getItemId() {
-        return itemId;
+    public long getProductId() {
+        return productId;
     }
 
-    public void setItemId(long itemId) {
-        this.itemId = itemId;
+    public void setProductId(long productId) {
+        this.productId = productId;
     }
 
-    public Item getItem() {
-        return item;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public long getOrderItemId() {
@@ -248,12 +286,20 @@ public class EstimateItem {
         this.estimate = estimate;
     }
 
-    public List<EstimateItemCostItem> getCostItems() {
-        return costItems;
+    public List<EstimateItemMaterial> getMaterials() {
+        return materials;
     }
 
-    public void setCostItems(List<EstimateItemCostItem> costItems) {
-        this.costItems = costItems;
+    public void setMaterials(List<EstimateItemMaterial> materials) {
+        this.materials = materials;
+    }
+
+    public List<EstimateItemExpense> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(List<EstimateItemExpense> expenses) {
+        this.expenses = expenses;
     }
 
     public int getQuantity() {

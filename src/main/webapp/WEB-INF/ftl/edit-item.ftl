@@ -96,7 +96,8 @@
                                 <label class="small">Inventory management</label>
 
                                 <label class="custom-checkbox">
-                                    <input type="checkbox" custom-checkbox="" ng-model="item.trackInventory" name="trackInventory" />
+                                    <input type="checkbox" custom-checkbox="" ng-model="item.trackInventory"
+                                           name="trackInventory"/>
                                     Track inventory
                                 </label>
                             </div>
@@ -118,7 +119,7 @@
                                 <tr>
                                     <th class="text-center" style="width: 50px">#</th>
                                     <th>Name</th>
-                                    <th>Components</th>
+
                                     <th>Date Created</th>
                                     <th>Date Modified</th>
                                     <th class="text-right" style="width: 120px">Action</th>
@@ -128,7 +129,7 @@
                                 <tr ng-repeat="(index, bom) in item.billsOfMaterials">
                                     <td>{{index + 1}}</td>
                                     <td>{{bom.name}}</td>
-                                    <td>{{}}</td>
+
                                     <td>{{bom.createdAt}}</td>
                                     <td>{{bom.updatedAt}}</td>
 

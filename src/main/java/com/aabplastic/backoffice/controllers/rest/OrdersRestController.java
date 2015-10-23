@@ -1,9 +1,7 @@
 package com.aabplastic.backoffice.controllers.rest;
 
-import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.exceptions.ResourceValidationException;
-import com.aabplastic.backoffice.models.dto.EstimateDto;
-import com.aabplastic.backoffice.models.dto.OrderDto;
+import com.aabplastic.backoffice.models.Order;
 import com.aabplastic.backoffice.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,24 +19,24 @@ public class OrdersRestController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderDto createOrder(@RequestBody @Valid OrderDto orderDto, BindingResult bindingResult) {
+    public Order createOrder(@RequestBody @Valid Order order, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ResourceValidationException("There are validation errors", bindingResult.getAllErrors());
         }
-        OrderDto created = orderService.create(orderDto);
+        Order created = orderService.create(order);
 
         return created;
     }
 
-    @RequestMapping(value = "/{id}",method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public OrderDto updateOrder(@PathVariable long id, @RequestBody @Valid OrderDto orderDto, BindingResult bindingResult) {
+    public Order updateOrder(@PathVariable long id, @RequestBody @Valid Order order, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new ResourceValidationException("There are validation errors", bindingResult.getAllErrors());
         }
 
-        OrderDto updated = orderService.update(id, orderDto);
+        Order updated = orderService.update(id, order);
 
         return updated;
     }

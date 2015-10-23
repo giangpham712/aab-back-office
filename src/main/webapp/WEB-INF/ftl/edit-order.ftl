@@ -8,7 +8,6 @@
     //<![CDATA[
     window.ViewData = {
         customers: ${customers},
-        items: ${items},
         order: ${order},
         estimate: ${estimate},
         mode: '${mode}'
@@ -54,7 +53,19 @@
 
                     </div>
                     <div class="col-md-4 text-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default"><i class="fa fa-cog"></i></button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li><a href="" ng-click="generateProductionSheet()">Generate production sheet</a></li>
 
+                                <li class="divider"></li>
+                                <li><a href="#">Generate quote</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
@@ -124,9 +135,12 @@
                                 <th rowspan="2"><span></span></th>
                                 <th rowspan="2">Item</th>
                                 <th rowspan="2">Measurement</th>
+                                <th rowspan="2">Handle width</th>
+                                <th rowspan="2">Handle length</th>
                                 <th rowspan="2">Material</th>
-                                <th rowspan="2">Film color</th>
                                 <th rowspan="2">Bag type</th>
+                                <th rowspan="2">Film color</th>
+                                <th rowspan="2">Emboss</th>
                                 <th rowspan="2">Printing</th>
                                 <th rowspan="2" class="quantity">Qty (pcs)</th>
                                 <th colspan="2">Outerbag</th>
@@ -149,13 +163,21 @@
                                     <span class="select">
                                         <i class="error text-danger fa fa-exclamation-triangle"></i>
                                     </span>
-                                    <input type="hidden" ng-model="item.itemId"/>
+                                    <input type="hidden" ng-model="item.productId"/>
                                 </td>
                                 <td class="item"><span ng-cloak="">{{item.itemName}}</span></td>
                                 <td class="size"><span ng-bind="getSize(item)"></span></td>
+
+                                <td class="handle-width"><span ng-bind="item.handleWidth"></span></td>
+                                <td class="handle-length"><span ng-bind="item.handleLength"></span></td>
+
                                 <td class="material"><span ng-bind="item.material"></span></td>
-                                <td class="film-color"><span ng-bind="item.filmColor"></span></td>
                                 <td class="bag-type"><span ng-bind="item.bagType"></span></td>
+
+                                <td class="film-color"><span ng-bind="item.filmColor"></span></td>
+
+                                <td class="emboss"><span ng-bind="item.emboss"></span></td>
+
                                 <td class="printing"><span ng-bind="item.printing"></span></td>
                                 <td class="quantity"><span ng-cloak="">{{item.quantity | number}}</span></td>
                                 <td class="outerbag-printing"><span ng-cloak="">{{item.outerbagPrinting}}</span></td>
@@ -182,11 +204,15 @@
                                                     <span class="caret"></span>
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="javascript:void(0);"
-                                                           ng-click="autofillItemInfo(editingItem)">Autofill item
-                                                        info</a></li>
-                                                    <li><a href="javascript:void(0);" ng-click="removeItem()">Remove
-                                                        item</a></li>
+                                                    <li>
+                                                        <a href ng-click="fillProductInfo($event, editingItem)">Load
+                                                            product info
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href ng-click="removeItem($event)">Remove item
+                                                        </a>
+                                                    </li>
                                                     <li><a href="#">Move down</a></li>
                                                     <li><a href="#">Move up</a></li>
                                                 </ul>
@@ -197,59 +223,100 @@
                                 <td class="item">
                                 <span>
                                     <selectize class="form-control"
-                                               config="{valueField: 'id', labelField: 'displayName', searchField: 'displayName', maxItems: 1, placeholder: 'Select an item'}"
-                                               options="items"
-                                               ng-model="editingItem.itemId"></selectize>
+                                               config="{valueField: 'id', labelField: 'name', searchField: 'name', maxItems: 1, placeholder: 'Select a product'}"
+                                               options="products"
+                                               ng-model="editingItem.productId"></selectize>
 
                                 </span>
                                 </td>
                                 <td class="size">
-                            <span>
-                                <input type="text" class="form-control thickness"
-                                       config="{'vMax':'1'}"
-                                       ng-auto-numeric="decimal"
-                                       ng-model="editingItem.thickness">
-                                <input type="text" class="form-control width"
-                                       config="{'vMax':'1000'}"
-                                       ng-auto-numeric="integer"
-                                       ng-model="editingItem.width">
-                                <input type="text" class="form-control blowing-width"
-                                       config="{'vMax':'1000'}"
-                                       ng-auto-numeric="integer"
-                                       ng-model="editingItem.blowingWidth">
-                                <input type="text" class="form-control length"
-                                       config="{'vMax':'1000'}"
-                                       ng-auto-numeric="integer"
-                                       ng-model="editingItem.length">
-                            </span>
+                                <span>
+                                    <input type="text" class="form-control thickness"
+                                           config="{'vMax':'1'}"
+                                           ng-auto-numeric="decimal"
+                                           ng-model="editingItem.thickness">
+                                    <input type="text" class="form-control width"
+                                           config="{'vMax':'1000'}"
+                                           ng-auto-numeric="integer"
+                                           ng-model="editingItem.width">
+                                    <input type="text" class="form-control blowing-width"
+                                           config="{'vMax':'1000'}"
+                                           ng-auto-numeric="integer"
+                                           ng-model="editingItem.blowingWidth">
+                                    <input type="text" class="form-control length"
+                                           config="{'vMax':'1000'}"
+                                           ng-auto-numeric="integer"
+                                           ng-model="editingItem.length">
+                                </span>
                                 </td>
+
+                                <td class="handle-width">
+                                    <span><input type="text" class="form-control"
+                                                 ng-model="editingItem.handleWidth"
+                                                 ng-auto-numeric="integer"></span>
+                                </td>
+
+                                <td class="handle-length">
+                                    <span><input type="text" class="form-control"
+                                                 ng-model="editingItem.handleLength"
+                                                 ng-auto-numeric="integer"></span>
+                                </td>
+
                                 <td class="material">
-                                    <span><input type="text" class="form-control"
-                                                 ng-model="editingItem.material"></span>
+                                    <span>
+                                        <select class="form-control" ng-model="editingItem.material"
+                                                ng-options="material for material in materials">
+                                        </select>
+                                    </span>
                                 </td>
-                                <td class="film-color">
-                                    <span><input type="text" class="form-control"
-                                                 ng-model="editingItem.filmColor"></span>
-                                </td>
+
                                 <td class="bag-type">
-                                    <span><input type="text" class="form-control"
-                                                 ng-model="editingItem.bagType"></span>
+                                    <span>
+                                        <select class="form-control" ng-model="editingItem.bagType" style="width: auto"
+                                                ng-options="bagType for bagType in bagTypes">
+                                        </select>
+                                    <span>
                                 </td>
+
+
+                                <td class="film-color">
+                                    <span>
+                                        <select class="form-control" ng-model="editingItem.filmColor"
+                                                ng-options="filmColor for filmColor in filmColors">
+                                        </select>
+                                    <span>
+                                </td>
+
+                                <td class="emboss">
+                                    <span>
+                                        <select class="form-control" ng-model="editingItem.emboss"
+                                                ng-options="emboss for emboss in embossTypes">
+                                        </select>
+                                    </span>
+                                </td>
+
                                 <td class="printing">
-                                    <span><input type="text" class="form-control"
-                                                 ng-model="editingItem.printing"></span>
+                                    <span>
+                                        <select class="form-control" ng-model="editingItem.printing"
+                                                ng-options="printing for printing in printingTypes">
+                                        </select>
+                                    </span>
                                 </td>
                                 <td class="quantity">
                                 <span>
                                     <input type="text" class="form-control"
                                            config="{'vMax':'10000000'}"
                                            ng-auto-numeric="integer"
-                                           ng-model="editingItem.quantity">
+                                           ng-model="editingItem.quantity"
+                                           readonly>
                                 </span>
                                 </td>
                                 <td class="outerbag-printing">
-                                    <span><input type="text" class="form-control"
-                                                 ng-model="editingItem.outerbagPrinting"></span>
+                                    <span>
+                                        <select class="form-control" ng-model="editingItem.outerbagPrinting"
+                                                ng-options="outerbagPrinting for outerbagPrinting in outerbagPrintingTypes">
+                                        </select>
+                                    </span>
                                 </td>
                                 <td class="pieces-per-outerbag">
                                     <span><input type="text" class="form-control"
@@ -275,7 +342,12 @@
                                                  ng-auto-numeric="currency"
                                                  ng-model="editingItem.unitPrice"></span>
                                 </td>
-
+                                <td class="total">
+                                    <span><input type="text" class="form-control"
+                                                 config="{'vMax':'10'}"
+                                                 ng-auto-numeric="currency"
+                                                 ng-model="editingItem.total"></span>
+                                </td>
                             </tr>
                         </table>
                     </div>

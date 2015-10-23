@@ -23,4 +23,11 @@ public class CustomersRestController {
         CustomerDto created = customerService.create(customerDto);
         return created;
     }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
+    public CustomerDto create(@PathVariable long id, @RequestBody @Valid CustomerDto customerDto) {
+        CustomerDto updated = customerService.update(id, customerDto);
+        return updated;
+    }
 }

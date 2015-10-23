@@ -94,6 +94,15 @@ public class ItemsRestController {
         return created;
     }
 
+    @RequestMapping(value = "/{id}/boms/{bomId}", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
+    public BillOfMaterialsDto updateBOM(@PathVariable long id, @PathVariable long bomId, @RequestBody @Valid BillOfMaterialsDto billOfMaterialsDto) {
+
+        BillOfMaterialsDto updated = itemService.updateBOM(bomId, billOfMaterialsDto);
+
+        return updated;
+    }
+
     @RequestMapping(value = "/{id}/boms/{bomId}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
     public void deleteBOM(@PathVariable long id, @PathVariable long bomId) {

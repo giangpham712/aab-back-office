@@ -9,6 +9,8 @@ public class BillOfMaterialsDto {
 
     private String name;
 
+    private String description;
+
     private List<BillOfMaterialsItemDto> items;
 
     private long itemId;
@@ -31,6 +33,14 @@ public class BillOfMaterialsDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<BillOfMaterialsItemDto> getItems() {

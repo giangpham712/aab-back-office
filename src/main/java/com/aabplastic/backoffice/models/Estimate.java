@@ -28,6 +28,9 @@ public class Estimate {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "estimate", cascade = CascadeType.ALL)
     private List<EstimateItem> items;
 
+    @Column(name = "order_number", nullable = false)
+    private String orderNumber;
+
     public long getId() {
         return id;
     }
@@ -74,5 +77,13 @@ public class Estimate {
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
     }
 }

@@ -1,5 +1,6 @@
 package com.aabplastic.backoffice.models.dto;
 
+import javax.persistence.Column;
 import java.util.List;
 
 public class EstimateItemDto {
@@ -17,6 +18,10 @@ public class EstimateItemDto {
     private double width;
 
     private double length;
+
+    private double handleLength;
+
+    private double handleWidth;
 
     private double handleRatio;
 
@@ -114,6 +119,22 @@ public class EstimateItemDto {
 
     public void setLength(double length) {
         this.length = length;
+    }
+
+    public double getHandleLength() {
+        return handleLength;
+    }
+
+    public void setHandleLength(double handleLength) {
+        this.handleLength = handleLength;
+    }
+
+    public double getHandleWidth() {
+        return handleWidth;
+    }
+
+    public void setHandleWidth(double handleWidth) {
+        this.handleWidth = handleWidth;
     }
 
     public double getHandleRatio() {

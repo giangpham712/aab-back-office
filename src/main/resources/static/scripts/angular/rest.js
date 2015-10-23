@@ -5,14 +5,50 @@ angular.module("AAB.rest").config(function (RestangularProvider) {
 });
 
 angular.module("AAB.rest")
+    .service("Products", ["Restangular", function (Restangular) {
+        var Products = Restangular.service("products");
+        Restangular.extendModel('products', function (model) {
+            return model;
+        });
+        return Products;
+    }]);
+
+angular.module("AAB.rest")
+    .service("Materials", ["Restangular", function (Restangular) {
+        var Materials = Restangular.service("materials");
+        Restangular.extendModel('materials', function (model) {
+            return model;
+        });
+        return Materials;
+    }]);
+
+angular.module("AAB.rest")
+    .service("Expenses", ["Restangular", function (Restangular) {
+        var Expenses = Restangular.service("expenses");
+        Restangular.extendModel('expenses', function (model) {
+            return model;
+        });
+        return Expenses;
+    }]);
+
+angular.module("AAB.rest")
+    .service("BOMs", ["Restangular", function (Restangular) {
+        var BOMs = Restangular.service("boms");
+        Restangular.extendModel('boms', function (model) {
+            return model;
+        });
+        return BOMs;
+    }]);
+
+angular.module("AAB.rest")
     .service("Items", ["Restangular", function (Restangular) {
-        var Item = Restangular.service("items");
+        var Items = Restangular.service("items");
 
         Restangular.extendModel('items', function (model) {
             return model;
         });
 
-        return Item;
+        return Items;
     }]);
 
 

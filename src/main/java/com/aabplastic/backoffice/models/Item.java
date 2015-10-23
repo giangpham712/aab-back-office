@@ -47,9 +47,6 @@ public class Item {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemAttribute> attributes;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BillOfMaterials> billsOfMaterials;
-
     public long getId() {
         return id;
     }
@@ -146,11 +143,4 @@ public class Item {
         this.attributes = attributes;
     }
 
-    public List<BillOfMaterials> getBillsOfMaterials() {
-        return billsOfMaterials;
-    }
-
-    public void setBillsOfMaterials(List<BillOfMaterials> billsOfMaterials) {
-        this.billsOfMaterials = billsOfMaterials;
-    }
 }

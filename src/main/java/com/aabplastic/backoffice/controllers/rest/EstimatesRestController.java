@@ -38,16 +38,17 @@ public class EstimatesRestController {
         return created;
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.OK)
     public EstimateDto updateEstimate(@PathVariable long id, @RequestBody @Valid EstimateDto estimateDto, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new ResourceValidationException("There are validation errors", bindingResult.getAllErrors());
         }
 
-        EstimateDto savedEstimate = orderService.getEstimateById(id);
+        EstimateDto updated = orderService.updateEstimate(id, estimateDto);
 
-
-        return savedEstimate;
+        return updated;
     }
 
 }

@@ -32,12 +32,35 @@
         </li>
         <li class="treeview">
             <a href="#">
-                <i class="glyphicons package"></i> <span>Inventory</span> <i class="fa fa-angle-left pull-right"> </i>
+                <i class="glyphicons shopping_bag"></i> <span>Products</span> <i class="fa fa-angle-left pull-right"> </i>
             </a>
             <ul class="treeview-menu">
-                <li class=""><a href="/items"><i class="fa fa-circle-o"></i> Items</a></li>
-                <li class=""><a href="/items/new"><i class="fa fa-circle-o"></i> New Item</a></li>
+                <li class=""><a href="/products"><i class="fa fa-circle-o"></i> List Products</a></li>
+                <li class=""><a href="/products/new"><i class="fa fa-circle-o"></i> New Product</a></li>
             </ul>
+        </li>
+        <li class="treeview">
+            <a href="#">
+                <i class="glyphicons asterisk"></i> <span>Raw Materials</span> <i class="fa fa-angle-left pull-right"> </i>
+            </a>
+            <ul class="treeview-menu">
+                <li class=""><a href="/materials"><i class="fa fa-circle-o"></i> List Materials</a></li>
+                <li class=""><a href="/materials/new"><i class="fa fa-circle-o"></i> New Material</a></li>
+            </ul>
+        </li>
+        <li class="treeview">
+            <a href="#">
+                <i class="glyphicons asterisk"></i> <span>Expense</span> <i class="fa fa-angle-left pull-right"> </i>
+            </a>
+            <ul class="treeview-menu">
+                <li class=""><a href="/expenses"><i class="fa fa-circle-o"></i> List Expenses</a></li>
+                <li class=""><a href="/expenses/new"><i class="fa fa-circle-o"></i> New Expense</a></li>
+            </ul>
+        </li>
+        <li class="treeview">
+            <a href="/boms">
+                <i class="glyphicons notes"></i> <span>Bills of materials</span>
+            </a>
         </li>
     </ul>
 </section>

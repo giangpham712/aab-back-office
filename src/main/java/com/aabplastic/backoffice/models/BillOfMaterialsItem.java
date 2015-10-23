@@ -1,5 +1,7 @@
 package com.aabplastic.backoffice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,6 +12,7 @@ public class BillOfMaterialsItem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bill_id", nullable = false)
     private BillOfMaterials bill;
@@ -17,12 +20,20 @@ public class BillOfMaterialsItem {
     @Column(name = "quantity", nullable = false)
     private double quantity;
 
-    @Column(name = "item_id", nullable = false)
-    private long itemId;
+    @Column(name = "material_id", nullable = false)
+    private long materialId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false, insertable = false, updatable = false)
-    private Item item;
+    @JoinColumn(name = "material_id", nullable = false, insertable = false, updatable = false)
+    private Material material;
+
+    public BillOfMaterialsItem() {}
+
+    public BillOfMaterialsItem (long materialId, double quantity) {
+        this.materialId = materialId;
+        this.quantity = quantity;
+    }
 
     public long getId() {
         return id;
@@ -48,19 +59,19 @@ public class BillOfMaterialsItem {
         this.quantity = quantity;
     }
 
-    public long getItemId() {
-        return itemId;
+    public long getMaterialId() {
+        return materialId;
     }
 
-    public void setItemId(long itemId) {
-        this.itemId = itemId;
+    public void setMaterialId(long materialId) {
+        this.materialId = materialId;
     }
 
-    public Item getItem() {
-        return item;
+    public Material getMaterial() {
+        return material;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public void setMaterial(Material material) {
+        this.material = material;
     }
 }

@@ -214,11 +214,12 @@ angular.module("items")
                 name: "",
                 items: [
                     {
-                        itemId: $scope.inventoryItems[0].id,
+                        itemId: $scope.inventoryItems[0] == null ? 0 : $scope.inventoryItems[0].id,
                         quantity: 0
                     }
                 ],
-                errors: []
+                errors: [],
+                $isNew: true,
             };
 
             $scope.showEditBOM(newBOM);
@@ -247,9 +248,11 @@ angular.module("items")
 
             bom.errors = {};
 
-            if (_.some($scope.item.billsOfMaterials, {"name": bom.name})) {
-                // BOM name already exists
-                bom.errors.name = "Name already exists";
+            if (bom.$isNew) {
+                if (_.some($scope.item.billsOfMaterials, {"name": bom.name})) {
+                    // BOM name already exists
+                    bom.errors.name = "Name already exists";
+                }
             }
 
             if (_.uniq(bom.items, function (item) {
@@ -261,15 +264,30 @@ angular.module("items")
 
             if (Object.keys(bom.errors).length == 0) {
 
-                Items.one($scope.item.id).post("boms", bom).then(function (response) {
+                if (bom.$isNew) {
 
-                    $scope.item.billsOfMaterials.push(response.plain());
-                    $("#modal_edit_bom").modal("hide");
-                }, function (error) {
-                    console.log(error);
-                });
+                    Items.one($scope.item.id).post("boms", bom).then(function (response) {
 
+                        $scope.item.billsOfMaterials.push(response.plain());
+                        $("#modal_edit_bom").modal("hide");
+                        NotificationService.notifySuccess("Bill of materials saved successfully");
 
+                    }, function (error) {
+                        console.log(error);
+                    });
+
+                } else {
+
+                    Items.one($scope.item.id).one("boms", bom.id).customPUT(bom).then(function (response) {
+
+                        bom = response.plain();
+                        $("#modal_edit_bom").modal("hide");
+                        NotificationService.notifySuccess("Bill of materials saved successfully");
+
+                    }, function (error) {
+                        console.log(error);
+                    })
+                }
             }
         }
 

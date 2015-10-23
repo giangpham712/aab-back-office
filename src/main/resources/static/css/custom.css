@@ -32,6 +32,9 @@ table#customers td {
 
 table#customers h3,
 table#items h3,
+table#products h3,
+table#materials h3,
+table#boms h3,
 table#orders h3 {
     font-size: 16px;
     color: #000;
@@ -163,9 +166,16 @@ div#list_order_items .size > span {
 
 }
 
-div#list_order_items .material > span,
-div#list_order_items .printing > span {
+div#list_order_items .material > span {
     width: 80px;
+}
+
+div#list_order_items .emboss > span  {
+    width: 120px;
+}
+
+div#list_order_items .printing > span {
+    width: 60px;
 }
 
 div#list_order_items .quantity > span {
@@ -234,27 +244,27 @@ table .form-control {
 
 /* Modals */
 
-#modal_new_customer .modal-dialog {
+#modal_edit_customer .modal-dialog {
     width: 900px;
 }
 
-#modal_new_customer table {
+#modal_edit_customer table {
     width: 100%;
 }
 
-#modal_new_customer table td {
+#modal_edit_customer table td {
     padding: 0 5px 5px 0;
 }
 
-#modal_new_customer table td.title {
+#modal_edit_customer table td.title {
     width: 55px;
 }
 
-#modal_new_customer table td.phone {
+#modal_edit_customer table td.phone {
     width: 120px;
 }
 
-#modal_new_customer p.error {
+#modal_edit_customer p.error {
     margin: 5px 0;
 }
 
@@ -512,4 +522,10 @@ span.required {
 .alertify-log-success .message,
 .alertify-log-error .message {
     display: block;
+}
+
+/* Dropdown menu styles */
+
+.dropdown-menu .dropdown-menu-right {
+    right: 0;
 }

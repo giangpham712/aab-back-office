@@ -177,6 +177,20 @@ angular.module("AAB.directives")
     });
 
 angular.module("AAB.directives")
+    .directive("ngModal", function () {
+        return {
+            restrict: "AE",
+            scope: {
+                modalId: '@',
+            },
+            controller: function ($scope, $element, $attrs, ModalService) {
+                $element.modal({ show: false });
+                ModalService.registerModal($scope.modalId, $element);
+            }
+        }
+    });
+
+angular.module("AAB.directives")
     .directive("customCheckbox", function () {
         return {
             restrict: "AE",

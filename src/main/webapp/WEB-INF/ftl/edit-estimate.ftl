@@ -13,24 +13,25 @@
 <script>
     //<![CDATA[
     window.ViewData = {
-        assemblyItems: ${assemblyItems},
-        inventoryItems: ${inventoryItems},
-        expenseItems: ${expenseItems},
+        products: ${products},
+        materials: ${materials},
+        expenses: ${expenses},
         estimate: ${estimate},
-        order: ${order}
+        order: ${order},
+        mode: '${mode}'
     };
     //]]>
 </script>
 </#assign>
 
 <#assign bottom_scripts>
-<script type="text/javascript" src="/scripts/angular/orders/app.js"></script>
+<script type="text/javascript" src="/scripts/angular/estimates/app.js"></script>
 <script>
 
 </script>
 </#assign>
 
-<@layout.admin sidebar_class="sidebar-collapse" content_header_title=title stylesheets=stylesheets top_scripts=top_scripts bottom_scripts=bottom_scripts ng_app="orders" >
+<@layout.admin sidebar_class="sidebar-collapse" content_header_title=title stylesheets=stylesheets top_scripts=top_scripts bottom_scripts=bottom_scripts ng_app="estimates" >
 <div class="row clearfix" ng-controller="EditEstimateCtrl">
 
     <form name="newOrderForm" novalidate ng-cloak>
@@ -111,7 +112,7 @@
 
 
                 <div id="list_order_items" class="order-items" style="">
-                    <label>Actual production cost</label>
+                    <label>Actual</label>
 
                     <div style="padding-bottom: 150px">
                         <table class="table table-hover" style="width: auto">
@@ -198,7 +199,6 @@
             <div class="links text-center">
                 <div>
                     <a href="/orders/edit/{{estimate.orderId}}">View Order</a>
-                    <a href="/workorders/new">Create Work Order</a>
                 </div>
             </div>
             <div class="text-right">
@@ -206,7 +206,7 @@
             </div>
         </div>
     </form>
-    <#include "partials/item-production-cost.ftl">
+    <#include "partials/modal-item-production-cost.ftl">
 </div>
 
 </@layout.admin>

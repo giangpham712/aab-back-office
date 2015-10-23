@@ -24,7 +24,7 @@ angular.module("AAB.schemas")
         "title": "Order Item Schema",
         "type": "object",
         "properties": {
-            "itemId": {
+            "productId": {
                 "type": ["string", "integer"],
                 "format": "string-integer",
             },
@@ -68,7 +68,7 @@ angular.module("AAB.schemas")
             }
 
         },
-        "required": ["itemId", "itemName", "thickness", "width", "blowingWidth", "length", "material", "filmColor", "printing", "quantity", "outerbagPrinting",]
+        "required": ["productId", "itemName", "thickness", "width", "blowingWidth", "length", "material", "filmColor", "printing", "quantity", "outerbagPrinting",]
     })
     .value("ORDER_SCHEMA", {
         "title": "Order Schema",

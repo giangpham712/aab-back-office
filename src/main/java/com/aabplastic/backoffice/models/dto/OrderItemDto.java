@@ -1,8 +1,5 @@
 package com.aabplastic.backoffice.models.dto;
 
-import com.aabplastic.backoffice.models.Order;
-
-import javax.persistence.*;
 import java.util.Date;
 
 //TODO Apply validation
@@ -17,6 +14,14 @@ public class OrderItemDto {
     private double width;
 
     private double length;
+
+    private String emboss;
+
+    private double handleLength;
+
+    private double handleWidth;
+
+    private double handleRatio;
 
     private String material;
 
@@ -44,7 +49,7 @@ public class OrderItemDto {
 
     private Date updatedAt;
 
-    private long itemId;
+    private long productId;
 
     public long getId() {
         return id;
@@ -84,6 +89,38 @@ public class OrderItemDto {
 
     public void setLength(double length) {
         this.length = length;
+    }
+
+    public String getEmboss() {
+        return emboss;
+    }
+
+    public void setEmboss(String emboss) {
+        this.emboss = emboss;
+    }
+
+    public double getHandleLength() {
+        return handleLength;
+    }
+
+    public void setHandleLength(double handleLength) {
+        this.handleLength = handleLength;
+    }
+
+    public double getHandleWidth() {
+        return handleWidth;
+    }
+
+    public void setHandleWidth(double handleWidth) {
+        this.handleWidth = handleWidth;
+    }
+
+    public double getHandleRatio() {
+        return handleRatio;
+    }
+
+    public void setHandleRatio(double handleRatio) {
+        this.handleRatio = handleRatio;
     }
 
     public String getMaterial() {
@@ -190,11 +227,11 @@ public class OrderItemDto {
         this.updatedAt = updatedAt;
     }
 
-    public long getItemId() {
-        return itemId;
+    public long getProductId() {
+        return productId;
     }
 
-    public void setItemId(long itemId) {
-        this.itemId = itemId;
+    public void setProductId(long productId) {
+        this.productId = productId;
     }
 }

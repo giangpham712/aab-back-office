@@ -1,6 +1,6 @@
 package com.aabplastic.backoffice.controllers.mvc;
 
-import com.aabplastic.backoffice.models.dto.CustomerDto;
+import com.aabplastic.backoffice.models.Customer;
 import com.aabplastic.backoffice.services.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class CustomersController {
     @RequestMapping(value = "/customers", method = RequestMethod.GET)
     public String listCustomers(Model model) throws Exception {
 
-        Iterable<CustomerDto> customers = customerService.getAllCustomers();
+        Iterable<Customer> customers = customerService.getAllCustomers();
 
         String jsonCustomers = new ObjectMapper().writeValueAsString(customers);
         model.addAttribute("customers", jsonCustomers);

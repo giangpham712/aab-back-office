@@ -20,15 +20,12 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
 
     @Override
-    public Iterable<CustomerDto> getAllCustomers() {
+    public Iterable<Customer> getAllCustomers() {
 
         //TODO Implement caching
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
         List<Customer> customers = customerRepository.findAll();
 
-        List<CustomerDto> result = mapperFactory.getMapperFacade().mapAsList(customers, CustomerDto.class);
-
-        return result;
+        return customers;
     }
 
     @Override
@@ -43,5 +40,30 @@ public class CustomerServiceImpl implements CustomerService {
 
         customer = customerRepository.save(customer);
         return mapperFactory.getMapperFacade().map(customer, CustomerDto.class);
+    }
+
+    public CustomerDto update(long id, CustomerDto customerDto) {
+        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+
+        Date now = new Date();
+
+        Customer savedCustomer = customerRepository.findOne(id);
+
+        savedCustomer.setUpdatedAt(now);
+
+        savedCustomer.setAlternatePhone(customerDto.getAlternatePhone());
+        savedCustomer.setCompanyName(customerDto.getCompanyName());
+        savedCustomer.setDisplayName(customerDto.getDisplayName());
+        savedCustomer.setEmailAddress(customerDto.getEmailAddress());
+        savedCustomer.setFirstName(customerDto.getFirstName());
+        savedCustomer.setLastName(customerDto.getLastName());
+        savedCustomer.setMiddleName(customerDto.getMiddleName());
+        savedCustomer.setPrimaryPhone(customerDto.getPrimaryPhone());
+        savedCustomer.setTitle(customerDto.getTitle());
+        savedCustomer.setWebsite(customerDto.getWebsite());
+
+        savedCustomer = customerRepository.save(savedCustomer);
+
+        return mapperFactory.getMapperFacade().map(savedCustomer, CustomerDto.class);
     }
 }

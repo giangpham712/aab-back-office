@@ -1,11 +1,5 @@
 angular.module("AAB.services", []);
 
-angular.module("AAB.services")
-    .service("ModalService", function () {
-
-
-
-    });
 
 angular.module("AAB.services")
     .service("NotificationService", function () {
@@ -16,7 +10,25 @@ angular.module("AAB.services")
         }
 
         this.notifyError = function (message) {
-            alertify.error('<i class="icon fa fa-times"><span class="title">Error</span></i><span class="message">' + message + '</span>');
+            alertify.error('<i class="icon fa fa-times"></i><span class="title">Error</span></i><span class="message">' + message + '</span>');
         }
 
     })
+
+angular.module("AAB.services")
+    .factory("ModalService", function () {
+        var modalService = {
+            modals: {},
+            registerModal: function (name, modal) {
+                this.modals[name] = modal;
+            },
+            showModal: function (name) {
+                this.modals[name].modal("show");
+            },
+            closeModal: function (name) {
+                this.modals[name].modal("hide");
+            }
+        };
+
+        return modalService;
+    });

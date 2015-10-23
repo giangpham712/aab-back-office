@@ -21,4 +21,6 @@ public interface ItemService {
     Iterable<BillOfMaterialsDto> listBOMsForItem(long id);
 
     void deleteBOM(long id);
+
+    BillOfMaterialsDto updateBOM(long id, BillOfMaterialsDto billOfMaterialsDto);
 }

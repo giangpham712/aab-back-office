@@ -1,6 +1,9 @@
 package com.aabplastic.backoffice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -42,12 +45,27 @@ public class Order {
     @Column (name = "customer_id", nullable = false)
     private long customerId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false, insertable = false, updatable = false)
     private Customer customer;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
     private Estimate estimate;
+
+    // Constructor
+
+    public Order() {
+        this.items = new ArrayList<>();
+
+        Date now = new Date();
+        this.setOrderDate(now);
+        this.setEstimatedTimeOfDeparture(now);
+        this.setEstimatedTimeOfArrival(now);
+    }
+
+    // Getters and setters
 
     public long getId() {
         return id;

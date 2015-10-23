@@ -32,7 +32,6 @@ public class OrderDto {
 
     private Date createdAt;
 
-
     private Date updatedAt;
 
     @NotEmpty(message = "Order must have at least one item")

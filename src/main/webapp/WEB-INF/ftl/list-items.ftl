@@ -62,7 +62,10 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" placeholder="Find an item"/>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Find by item name"/>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                    </div>
                 </div>
                 <div class="col-md-2 pull-right">
                     <select custom-select class="form-control"
@@ -100,7 +103,7 @@
         </div>
 
     </div>
-    <#include "partials/new-customer.ftl">
+    <#include "partials/modal-edit-customer.ftl">
 </div>
 
 </@layout.admin>

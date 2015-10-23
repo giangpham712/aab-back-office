@@ -1,16 +1,22 @@
 package com.aabplastic.backoffice.controllers.mvc;
 
-import com.aabplastic.backoffice.enums.ItemType;
+import com.aabplastic.backoffice.excel.ProductionSheetExcelExporter;
+import com.aabplastic.backoffice.excel.models.ProductionSheetOrder;
+import com.aabplastic.backoffice.excel.models.ProductionSheetOrderItem;
 import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
-import com.aabplastic.backoffice.models.Estimate;
-import com.aabplastic.backoffice.models.dto.*;
+import com.aabplastic.backoffice.locale.MessageByLocaleService;
+import com.aabplastic.backoffice.models.Customer;
+import com.aabplastic.backoffice.models.Order;
+import com.aabplastic.backoffice.models.OrderItem;
+import com.aabplastic.backoffice.models.Product;
+import com.aabplastic.backoffice.models.dto.EstimateDto;
+import com.aabplastic.backoffice.models.dto.OrderDto;
 import com.aabplastic.backoffice.services.CustomerService;
-import com.aabplastic.backoffice.services.ItemService;
 import com.aabplastic.backoffice.services.OrderService;
+import com.aabplastic.backoffice.services.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
+import com.google.common.collect.Iterators;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,13 +24,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Controller
 public class OrdersController {
@@ -36,22 +47,25 @@ public class OrdersController {
     private CustomerService customerService;
 
     @Autowired
-    private ItemService itemService;
+    private ProductService productService;
+
+    @Autowired
+    private MessageByLocaleService messageByLocaleService;
 
     @RequestMapping(value = "/orders", method = RequestMethod.GET)
     public String listOrders(Model model) throws Exception {
 
-        Iterable<OrderDto> orders = orderService.getAllOrders();
+        Iterable<Order> orders = orderService.getAllOrders();
 
-        Iterable<CustomerDto> customers = customerService.getAllCustomers();
+        Iterable<Customer> customers = customerService.getAllCustomers();
 
-        Map<Long, CustomerDto> customersMap = new HashMap<>();
+        Map<Long, Customer> customersMap = new HashMap<>();
 
         customers.forEach(customerDto -> {
             customersMap.put(customerDto.getId(), customerDto);
         });
 
-        for (OrderDto order : orders) {
+        for (Order order : orders) {
             order.setCustomer(customersMap.get(order.getCustomerId()));
         }
 
@@ -69,16 +83,21 @@ public class OrdersController {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
 
-        Iterable<CustomerDto> customers = customerService.getAllCustomers();
+        Iterable<Customer> customers = customerService.getAllCustomers();
         String jsonCustomers = objectMapper.writeValueAsString(customers);
 
-        Iterable<ItemDto> items = itemService.listItemsByType(ItemType.ASSEMBLY_ITEM, new String[]{"attributes", "billsOfMaterials"});
-        String jsonItems = objectMapper.writeValueAsString(items);
+        Order order = new Order();
+
+        if (Iterators.size(customers.iterator()) > 0) {
+            order.setCustomerId(Iterators.get(customers.iterator(), 0).getId());
+        }
+
+        order.getItems().add(new OrderItem());
+        String jsonOrder = objectMapper.writeValueAsString(order);
 
         model.addAttribute("headerTitle", "New order");
         model.addAttribute("customers", jsonCustomers);
-        model.addAttribute("items", jsonItems);
-        model.addAttribute("order", "{}");
+        model.addAttribute("order", jsonOrder);
         model.addAttribute("estimate", objectMapper.writeValueAsString(null));
 
         model.addAttribute("mode", "new");
@@ -100,11 +119,8 @@ public class OrdersController {
 
         String jsonOrder = objectMapper.writeValueAsString(order);
 
-        Iterable<CustomerDto> customers = customerService.getAllCustomers();
+        Iterable<Customer> customers = customerService.getAllCustomers();
         String jsonCustomers = objectMapper.writeValueAsString(customers);
-
-        Iterable<ItemDto> items = itemService.listItemsByType(ItemType.ASSEMBLY_ITEM, new String[]{"attributes", "billsOfMaterials"});
-        String jsonItems = objectMapper.writeValueAsString(items);
 
         EstimateDto estimate = orderService.getEstimateByOrderId(order.getId());
         String jsonEstimate = objectMapper.writeValueAsString(estimate);
@@ -112,123 +128,145 @@ public class OrdersController {
         model.addAttribute("order", jsonOrder);
         model.addAttribute("headerTitle", order.getOrderNumber());
         model.addAttribute("customers", jsonCustomers);
-        model.addAttribute("items", jsonItems);
         model.addAttribute("estimate", jsonEstimate);
 
         model.addAttribute("mode", "edit");
         return "edit-order";
     }
 
-    @RequestMapping(value = "/estimates/new", method = RequestMethod.GET)
-    public String newEstimate(
-            Model model,
-            @RequestParam(value = "orderId", required = true) long orderId,
-            RedirectAttributes redirectAttributes
-    )
-            throws JsonProcessingException {
+    @RequestMapping(value = "/orders/productionsheet/{id}", method = RequestMethod.GET)
+    public String productionSheet(Model model, @PathVariable long id) throws JsonProcessingException {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
 
-        OrderDto order = orderService.getOrderById(orderId);
+        OrderDto order = orderService.getOrderById(id);
 
         if (order == null) {
             throw new ResourceNotFoundException("Not found");
         }
 
-        EstimateDto existingEstimate = orderService.getEstimateByOrderId(orderId);
+        Iterable<Product> products = productService.listProducts();
+        Map<Long, Product> productMap = StreamSupport.stream(products.spliterator(), false).collect(Collectors.toMap(Product::getId, Function.identity()));
 
-        if (existingEstimate != null) {
-            String redirectUrl = "estimates/edit/" + existingEstimate.getId();
-            return "redirect:/" + redirectUrl;
-        }
-
-        EstimateDto estimate = new EstimateDto();
-        estimate.setOrderNumber(order.getOrderNumber());
-        estimate.setOrderId(order.getId());
-
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-
-        estimate.setItems(order.getItems().stream().map(x -> {
-
-            EstimateItemDto estimateItem = mapperFactory.getMapperFacade().map(x, EstimateItemDto.class);
-            estimateItem.setOrderItemId(x.getId());
-            double gusset = (estimateItem.getBlowingWidth() - estimateItem.getWidth()) / 2;
-            estimateItem.setGusset(gusset);
-            return estimateItem;
-
-        }).collect(Collectors.toList()));
-
-
-        Iterable<ItemDto> assemblyItems = itemService.listItemsByType(ItemType.ASSEMBLY_ITEM, new String[]{"attributes", "billsOfMaterials"});
-        String jsonAssemblyItems = objectMapper.writeValueAsString(assemblyItems);
-
-        Iterable<ItemDto> inventoryItems = itemService.listItemsByType(ItemType.INVENTORY_ITEM, new String[]{"billsOfMaterials"});
-        String jsonInventoryItems = objectMapper.writeValueAsString(inventoryItems);
-
-        Iterable<ItemDto> expenseItems = itemService.listItemsByType(ItemType.EXPENSE_ITEM, new String[]{"billsOfMaterials"});
-        String jsonExpenseItems = objectMapper.writeValueAsString(expenseItems);
+        ProductionSheetOrder productionSheetOrder = buildProductionSheetOrder(order, order.getOrderNumber(), productMap);
 
         String jsonOrder = objectMapper.writeValueAsString(order);
-        String jsonEstimate = objectMapper.writeValueAsString(estimate);
+        String jsonProductionSheetOrder = objectMapper.writeValueAsString(productionSheetOrder);
 
-        model.addAttribute("mode", "new");
+        model.addAttribute("headerTitle", MessageFormat.format("{0} - Production sheet", order.getOrderNumber()));
         model.addAttribute("order", jsonOrder);
-        model.addAttribute("estimate", jsonEstimate);
+        model.addAttribute("productionSheetOrder", jsonProductionSheetOrder);
+        model.addAttribute("message", messageByLocaleService);
 
-        model.addAttribute("assemblyItems", jsonAssemblyItems);
-        model.addAttribute("inventoryItems", jsonInventoryItems);
-        model.addAttribute("expenseItems", jsonExpenseItems);
-
-        return "edit-estimate";
+        return "production-sheet";
     }
 
-    @RequestMapping(value = "/estimates/edit/{id}", method = RequestMethod.GET)
-    public String editEstimate(Model model, @PathVariable long id) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
+    @RequestMapping(value = "/orders/productionsheet/{id}", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded" )
+    public void generateProductionSheet(@PathVariable long id, @RequestParam String orderName, HttpServletResponse response) throws IOException {
 
-        EstimateDto estimate = orderService.getEstimateById(id);
-
-        if (estimate == null) {
+        OrderDto order = orderService.getOrderById(id);
+        if (order == null) {
             throw new ResourceNotFoundException("Not found");
         }
 
+        Iterable<Product> products = productService.listProducts();
+        Map<Long, Product> productMap = StreamSupport.stream(products.spliterator(), false).collect(Collectors.toMap(Product::getId, Function.identity()));
 
-        OrderDto order = orderService.getOrderById(estimate.getOrderId());
-        String jsonOrder = objectMapper.writeValueAsString(order);
+        ProductionSheetOrder productionSheetOrder = buildProductionSheetOrder(order, orderName, productMap);
 
-        estimate.setOrderNumber(order.getOrderNumber());
+        ProductionSheetExcelExporter exporter = new ProductionSheetExcelExporter();
 
-        Iterable<ItemDto> assemblyItems = itemService.listItemsByType(ItemType.ASSEMBLY_ITEM, new String[]{"attributes", "billsOfMaterials"});
-        String jsonAssemblyItems = objectMapper.writeValueAsString(assemblyItems);
+        String filename = exporter.exportExcelFile(productionSheetOrder);
 
-        Iterable<ItemDto> inventoryItems = itemService.listItemsByType(ItemType.INVENTORY_ITEM, new String[]{"billsOfMaterials"});
-        String jsonInventoryItems = objectMapper.writeValueAsString(inventoryItems);
+        File file = new File("temp/" + filename);
+        InputStream is = new FileInputStream(file);
 
-        Iterable<ItemDto> expenseItems = itemService.listItemsByType(ItemType.EXPENSE_ITEM, new String[]{"billsOfMaterials"});
-        String jsonExpenseItems = objectMapper.writeValueAsString(expenseItems);
-
-        String jsonEstimate = objectMapper.writeValueAsString(estimate);
-
-        model.addAttribute("mode", "edit");
-        model.addAttribute("order", jsonOrder);
-        model.addAttribute("estimate", jsonEstimate);
-
-        model.addAttribute("assemblyItems", jsonAssemblyItems);
-        model.addAttribute("inventoryItems", jsonInventoryItems);
-        model.addAttribute("expenseItems", jsonExpenseItems);
-
-        return "edit-estimate";
+        response.setContentType("application/octet-stream");
+        // Response header
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+        // Read from the file and write into the response
+        OutputStream os = response.getOutputStream();
+        byte[] buffer = new byte[1024];
+        int len;
+        while ((len = is.read(buffer)) != -1) {
+            os.write(buffer, 0, len);
+        }
+        os.flush();
+        os.close();
+        is.close();
     }
 
-    @RequestMapping(value = "/workorders/new", method = RequestMethod.GET)
-    public String newWorkOrder(
-            Model model,
-            @RequestParam(value = "estimateId", required = true) long orderId,
-            RedirectAttributes redirectAttributes
-    )
-            throws JsonProcessingException {
-        return "edit-workorder";
+    private ProductionSheetOrder buildProductionSheetOrder(OrderDto order, String orderName, Map<Long, Product> productMap) {
+
+        ProductionSheetOrder productionSheetOrder = new ProductionSheetOrder();
+        productionSheetOrder.setCustomer(order.getCustomer().getDisplayName());
+        productionSheetOrder.setOrderName(orderName);
+        productionSheetOrder.setOrderNumber(order.getOrderNumber());
+        productionSheetOrder.setProductionSheetOrderItems(order.getItems().stream().map(item -> {
+
+            ProductionSheetOrderItem productionSheetOrderItem = new ProductionSheetOrderItem();
+
+            productionSheetOrderItem.setProductionSheetOrder(productionSheetOrder);
+            productionSheetOrderItem.setProductId(String.valueOf(item.getProductId()));
+            productionSheetOrderItem.setProductName(productMap.get(item.getProductId()).getName());
+
+            NumberFormat formatter1 = new DecimalFormat("#0.000");
+            NumberFormat formatter2 = new DecimalFormat("#0.00");
+
+            productionSheetOrderItem.setThickness(formatter1.format(item.getThickness()));
+            productionSheetOrderItem.setWidth(String.valueOf((int) item.getWidth()));
+            productionSheetOrderItem.setBlowingWidth(String.valueOf((int) item.getBlowingWidth()));
+            productionSheetOrderItem.setLength(String.valueOf((int) item.getLength()));
+            productionSheetOrderItem.setEmboss(item.getEmboss());
+
+            double gusset = (item.getBlowingWidth() - item.getWidth()) / 2;
+            double actualThickness = calculateActualThickness(item.getThickness());
+
+            double weightPerLengthUnit = actualThickness * item.getBlowingWidth() * 2 * 9 / 10;
+            int lengthPerRoll = getLengthPerRoll(weightPerLengthUnit);
+            double weightPerRoll = weightPerLengthUnit * lengthPerRoll / 1000;
+            double unitWeight = (item.getWidth() + gusset * 2) * item.getLength() * 0.09 * actualThickness * 2 / 100;
+            double totalWeight = unitWeight * item.getQuantity() / 1000;
+            double totalBlowingWeight = totalWeight * 1.16;
+            int totalRolls = (int) Math.ceil(totalBlowingWeight / weightPerRoll);
+
+            productionSheetOrderItem.setGusset(String.valueOf(gusset));
+
+            productionSheetOrderItem.setWeightPerLengthUnit(formatter2.format(weightPerLengthUnit));
+            productionSheetOrderItem.setLengthPerRoll(String.valueOf(lengthPerRoll));
+            productionSheetOrderItem.setWeightPerRoll(formatter2.format(weightPerRoll));
+            productionSheetOrderItem.setTotalWeight(formatter2.format(totalWeight));
+            productionSheetOrderItem.setTotalBlowingWeight(String.valueOf(totalBlowingWeight));
+            productionSheetOrderItem.setTotalRolls(String.valueOf(totalRolls));
+
+
+            return productionSheetOrderItem;
+
+        }).collect(Collectors.toList()));
+
+        return productionSheetOrder;
+    }
+
+    private double calculateActualThickness(double thickness) {
+        double tolerance;
+        if (thickness < 0.013) {
+            tolerance = 0;
+        } else if (thickness < 0.014) {
+            tolerance = 2;
+        } else {
+            tolerance = 5;
+        }
+
+        return (100 - tolerance) * thickness / 100;
+    }
+
+    private int getLengthPerRoll(double weightPerLengthUnit) {
+        int lengthPerRoll = 4000;
+        while (lengthPerRoll * weightPerLengthUnit / 1000 > 90) {
+            lengthPerRoll = lengthPerRoll - 500;
+        }
+
+        return lengthPerRoll;
     }
 }
