@@ -32,15 +32,48 @@ angular.module("AAB.models")
             angular.extend(this, item);
         }
 
-        EstimateItem.prototype.getCostPerWeightUnit = function () {
+        EstimateItem.prototype.getTotalMaterialQuantity = function () {
+            var materialQuantity = _.reduce(this.materials || [], function (memo, material) {
+                return memo + parseFloat(material.quantity);
+            }, 0);
 
+            return materialQuantity;
+        }
+
+        EstimateItem.prototype.getTotalMaterialCost = function () {
             var materialsCost = _.reduce(this.materials || [], function (memo, item) {
                 return memo + parseFloat(item.quantity) * item.costPerWeightUnit;
             }, 0);
 
-            var expensesCost = _.reduce(this.expenseItems || [], function (memo, item) {
+            return materialsCost;
+        }
+
+        EstimateItem.prototype.getTotalMaterialCostPerTon = function () {
+            var materialsCost = this.getTotalMaterialCost() / this.getTotalMaterialQuantity() * 1000;
+
+            if (isNaN(materialsCost)) {
+                materialsCost = 0;
+            }
+
+            return materialsCost;
+        }
+
+        EstimateItem.prototype.getTotalExpenseCostPerTon = function () {
+            var expensesCost = _.reduce(this.expenses || [], function (memo, item) {
                 return memo + parseFloat(item.total);
             }, 0);
+
+            if (isNaN(expensesCost)) {
+                expensesCost = 0;
+            }
+
+            return expensesCost;
+        }
+
+        EstimateItem.prototype.getCostPerWeightUnit = function () {
+
+            var materialsCost = this.getTotalMaterialCostPerTon();
+            var expensesCost = this.getTotalExpenseCostPerTon();
 
             return parseFloat(materialsCost) + parseFloat(expensesCost);
         }
@@ -50,47 +83,5 @@ angular.module("AAB.models")
         }
 
         return EstimateItem;
-
-    });
-
-angular.module("AAB.models")
-    .factory("WorkOrder", function (WorkOrderItem) {
-
-        var WorkOrder = function (workOrder) {
-            angular.extend(this, workOrder);
-            this.items = workOrder.items.map(function (item) {
-                return new WorkOrderItem(item);
-            });
-        };
-
-        return WorkOrder;
-
-    });
-
-angular.module("AAB.models")
-    .factory("WorkOrderItem", function () {
-
-        var WorkOrder = function (item) {
-            angular.extend(this, item);
-
-            this.weightPerLengthUnit = this.thickness * this.blowingWidth * 2 * 9 / 10;
-            this.lengthPerRoll = this.calculateLengthPerRoll();
-            this.weightPerRoll = this.lengthPerRoll * this.weightPerLengthUnit;
-            this.totalBlowingWeight = this.totalWeight * 1.16;
-            this.totalRolls = Math.ceil(this.totalBlowingWeight / this.weightPerRoll * 1000);
-
-        };
-
-        WorkOrder.prototype.calculateLengthPerRoll = function () {
-            var lengthPerRoll = 4000;
-            while (lengthPerRoll * this.weightPerLengthUnit / 1000 > 90) {
-                lengthPerRoll = lengthPerRoll - 500;
-            }
-
-            return lengthPerRoll;
-        };
-
-        return WorkOrder;
-
 
     });

@@ -52,7 +52,7 @@
                     <div class="col-md-3">
 
                     </div>
-                    <div class="col-md-4 text-right">
+                    <div class="col-md-4 text-right" ng-show="order.id">
                         <div class="btn-group">
                             <button type="button" class="btn btn-default"><i class="fa fa-cog"></i></button>
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -60,7 +60,7 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                <li><a href="" ng-click="generateProductionSheet()">Generate production sheet</a></li>
+                                <li><a href="" ng-click="generateProductionSheet()">Print production sheet</a></li>
 
                                 <li class="divider"></li>
                                 <li><a href="#">Generate quote</a></li>

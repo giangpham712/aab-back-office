@@ -1,10 +1,12 @@
 package com.aabplastic.backoffice.models;
 
-import com.aabplastic.backoffice.models.dto.EstimateItemExpense;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.List;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "estimate_items")
 public class EstimateItem {
@@ -73,6 +75,7 @@ public class EstimateItem {
     @Column(name = "product_id", nullable = false)
     private long productId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false, insertable = false, updatable = false)
     private Product product;
@@ -80,18 +83,20 @@ public class EstimateItem {
     @Column(name = "order_item_id", nullable = false)
     private long orderItemId;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_id", nullable = false, insertable = false, updatable = false)
     private OrderItem orderItem;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "estimate_id", nullable = false)
     private Estimate estimate;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "estimateItem", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "estimateItem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EstimateItemMaterial> materials;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "estimateItem", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "estimateItem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EstimateItemExpense> expenses;
 
     public long getId() {

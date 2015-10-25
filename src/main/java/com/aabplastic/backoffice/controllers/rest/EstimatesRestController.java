@@ -1,8 +1,7 @@
 package com.aabplastic.backoffice.controllers.rest;
 
 import com.aabplastic.backoffice.exceptions.ResourceValidationException;
-import com.aabplastic.backoffice.models.dto.EstimateDto;
-import com.aabplastic.backoffice.models.dto.OrderDto;
+import com.aabplastic.backoffice.models.Estimate;
 import com.aabplastic.backoffice.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,33 +19,32 @@ public class EstimatesRestController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public EstimateDto createEstimate(@RequestBody @Valid EstimateDto estimateDto, BindingResult bindingResult) {
+    public Estimate createEstimate(@RequestBody @Valid Estimate estimate, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ResourceValidationException("There are validation errors", bindingResult.getAllErrors());
         }
 
-        long orderId = estimateDto.getOrderId();
+        long orderId = estimate.getOrderId();
 
-        EstimateDto estimate = orderService.getEstimateByOrderId(orderId);
+        Estimate savedEstimate = orderService.getEstimateByOrderId(orderId);
 
-        if (estimate != null) {
+        if (savedEstimate != null) {
             return estimate;
         }
 
-        EstimateDto created = orderService.createEstimate(estimateDto);
-
+        Estimate created = orderService.createEstimate(estimate);
         return created;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public EstimateDto updateEstimate(@PathVariable long id, @RequestBody @Valid EstimateDto estimateDto, BindingResult bindingResult) {
+    public Estimate updateEstimate(@PathVariable long id, @RequestBody @Valid Estimate estimate, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new ResourceValidationException("There are validation errors", bindingResult.getAllErrors());
         }
 
-        EstimateDto updated = orderService.updateEstimate(id, estimateDto);
+        Estimate updated = orderService.updateEstimate(id, estimate);
 
         return updated;
     }

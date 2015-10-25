@@ -3,7 +3,7 @@
 <#assign top_scripts>
 <script>
     //<![CDATA[
-    window.ViewData = {orders: ${orders}};
+    window.ViewData = {orders: ${orders}, customers: ${customers}};
     //]]>
 </script>
 </#assign>
@@ -56,9 +56,11 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Find by order number or customer"/>
-                        <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                    <div class="input-group search-box">
+                        <input type="text" class="form-control" ng-model="searchKey"
+                               placeholder="Find by order number"/>
+                        <span class="input-group-addon" ng-click="searchOrders()"><span
+                                class="glyphicon glyphicon-search"></span></span>
                     </div>
                 </div>
             </div>
@@ -77,20 +79,32 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr dir-paginate="order in orders | itemsPerPage: 10" total-items="{{totalOrders}}"
-                    pagination-id="order" ng-click="viewOrder(order)">
+                <tr dir-paginate="order in orders | itemsPerPage: 20" total-items="{{totalOrders}}"
+                    pagination-id="order">
                     <td>
                         <input type="checkbox">
                     </td>
-                    <td><span ng-bind="order.orderNumber"></span></td>
-                    <td><span ng-bind="order.customer.displayName"></span></td>
+                    <td><a href="" ng-click="viewOrder(order)"><span ng-bind="order.orderNumber"></span></a></td>
+                    <td><span ng-bind="order.customerName"></span></td>
                     <td><span ng-bind="order.orderDate"></span></td>
                     <td><span ng-bind="order.estimatedTimeOfDeparture"></span></td>
                     <td><span ng-bind="order.estimatedTimeOfArrival"></span></td>
                     <td><span ng-bind="order.total | currency"></span></td>
                     <td>New</td>
                     <td>
-
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
+                                    aria-expanded="false">
+                                Action &nbsp;
+                                <i class="fa fa-caret-down"></i>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li><a href="javascript:void(0);" ng-click="viewOrder(order)">View</a></li>
+                                <li><a href="javascript:void(0);">Print production sheet</a></li>
+                                <li><a href="javascript:void(0);">View estimate</a></li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
                 </tbody>

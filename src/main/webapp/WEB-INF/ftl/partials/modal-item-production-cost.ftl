@@ -37,7 +37,7 @@
                                     <th style="width: 100px">Quantity (kg)</th>
                                     <th>Ratio</th>
                                     <th style="width: 150px">Cost per kg (USD)</th>
-                                    <th style="width: 100px">Total</th>
+                                    <th style="width: 100px">Total (USD)</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -53,6 +53,19 @@
                                     <td colspan="5">No items</td>
                                 </tr>
                                 </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td>{{editingItem.getTotalMaterialQuantity()}}</td>
+                                    <td>100%</td>
+                                    <td></td>
+                                    <td>{{editingItem.getTotalMaterialCost()}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"><b>Cost per ton:</b></td>
+                                    <td>{{editingItem.getTotalMaterialCostPerTon()}}</td>
+                                </tr>
+                                </tfoot>
                             </table>
 
                         </div>
@@ -70,24 +83,34 @@
                                     <tr>
                                         <th>Item</th>
                                         <th>Total</th>
+                                        <th style="width: 100px"></th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr ng-repeat="item in editingItem.expenses">
                                         <td>
                                             <selectize class="form-control"
-                                                    ng-model="item.itemId"
-                                                    config="{ valueField: 'id', labelField: 'displayName', searchField: 'displayName', maxItems: 1 }"
+                                                    ng-model="item.expenseId"
+                                                    config="{ valueField: 'id', labelField: 'name', searchField: 'name', maxItems: 1 }"
                                                     options="expenses"></selectize>
                                         </td>
                                         <td style="width: 250px;">
                                             <input type="text" class="form-control" ng-model="item.total" ng-auto-numeric="currency" config="{mDec:2}"/>
                                         </td>
+                                        <td>
+                                            <button type="button" class="btn btn-link">Remove</button>
+                                        </td>
                                     </tr>
                                     <tr ng-show="!editingItem.expenses || editingItem.expenses.length == 0">
-                                        <td colspan="2">No items</td>
+                                        <td colspan="3">No items</td>
                                     </tr>
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="2"><b>Cost per ton</b></td>
+                                            <td>{{editingItem.getTotalExpenseCostPerTon()}}</td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                             <div>

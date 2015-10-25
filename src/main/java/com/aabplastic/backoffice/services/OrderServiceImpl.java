@@ -1,16 +1,18 @@
 package com.aabplastic.backoffice.services;
 
 import com.aabplastic.backoffice.models.*;
-import com.aabplastic.backoffice.models.dto.EstimateDto;
 import com.aabplastic.backoffice.models.dto.OrderDto;
-import com.aabplastic.backoffice.models.dto.WorkOrderDto;
 import com.aabplastic.backoffice.repositories.EstimateRepository;
 import com.aabplastic.backoffice.repositories.OrderRepository;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -125,10 +127,17 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public Iterable<Order> getAllOrders() {
+    public Iterable<Order> listAllOrders() {
 
         List<Order> orders = orderRepository.findAll();
 
+        return orders;
+    }
+
+    @Override
+    public Page<Order> listOrders(String search, int page, int limit, String sortBy, Sort.Direction sortDirection) {
+        PageRequest pageable = new PageRequest(page - 1, limit, new Sort(sortDirection, sortBy));
+        Page<Order> orders = orderRepository.findByOrderNumberLike(MessageFormat.format("%{0}%", search), pageable);
         return orders;
     }
 
@@ -144,40 +153,39 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public EstimateDto createEstimate(EstimateDto estimateDto) {
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-        Estimate estimate = mapperFactory.getMapperFacade().map(estimateDto, Estimate.class);
+    public Estimate createEstimate(Estimate putEstimate) {
 
         Date now = new Date();
 
-        estimate.setCreatedAt(now);
-        estimate.setUpdatedAt(now);
+        putEstimate.setCreatedAt(now);
+        putEstimate.setUpdatedAt(now);
 
-        final Estimate finalEstimate = estimate;
-        estimate.getItems().forEach(x -> {
+        final Estimate finalEstimate = putEstimate;
+        putEstimate.getItems().forEach(x -> {
             x.setEstimate(finalEstimate);
             x.setId(0);
-            x.getMaterials().forEach(y -> {
-                y.setId(0);
-                y.setEstimateItem(x);
-            });
+            if (x.getMaterials() != null) {
+                x.getMaterials().forEach(y -> {
+                    y.setId(0);
+                    y.setEstimateItem(x);
+                });
+            }
 
-            x.getExpenses().forEach(y -> {
-                y.setId(0);
-                y.setEstimateItem(x);
-            });
+            if (x.getExpenses() != null) {
+                x.getExpenses().forEach(y -> {
+                    y.setId(0);
+                    y.setEstimateItem(x);
+                });
+            }
+
         });
 
-        estimate = estimateRepository.save(estimate);
-
-        return mapperFactory.getMapperFacade().map(estimate, EstimateDto.class);
+        putEstimate = estimateRepository.save(putEstimate);
+        return putEstimate;
     }
 
     @Override
-    public EstimateDto updateEstimate(long id, EstimateDto estimateDto) {
-
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-        Estimate putEstimate = mapperFactory.getMapperFacade().map(estimateDto, Estimate.class);
+    public Estimate updateEstimate(long id, Estimate putEstimate) {
 
         List<EstimateItem> putEstimateItems = putEstimate.getItems();
         Map<Long, EstimateItem> map1 = putEstimateItems.stream().filter(x -> x.getId() != 0).collect(Collectors.toMap(EstimateItem::getId, Function.identity()));
@@ -189,49 +197,14 @@ public class OrderServiceImpl implements OrderService {
 
             EstimateItem putEstimateItem = map1.get(estimateItem.getId());
 
+            updateItemMaterials(putEstimateItem, estimateItem);
+            updateItemExpenses(putEstimateItem, estimateItem);
+
             estimateItem.setActualPricePerWeightUnit(putEstimateItem.getActualPricePerWeightUnit());
             estimateItem.setActualThickness(putEstimateItem.getActualThickness());
             estimateItem.setActualTotalWeight(putEstimateItem.getActualTotalWeight());
             estimateItem.setActualUnitWeight(putEstimateItem.getActualUnitWeight());
             estimateItem.setBlowingWidth(putEstimateItem.getBlowingWidth());
-
-            List<EstimateItemMaterial> putMaterials = putEstimateItem.getMaterials();
-            Map<Long, EstimateItemMaterial> map11 = putMaterials.stream().filter(x -> x.getId() != 0).collect(Collectors.toMap(EstimateItemMaterial::getId, Function.identity()));
-
-            List<EstimateItemMaterial> savedMaterials = estimateItem.getMaterials();
-            Map<Long, EstimateItemMaterial> map22 = savedMaterials.stream().collect(Collectors.toMap(EstimateItemMaterial::getId, Function.identity()));
-
-            Set<Long> ids = new HashSet<>();
-
-            // Remove items
-            savedMaterials.stream()
-                    .filter(x -> !map11.containsKey(x.getId()))
-                    .sorted((o1, o2) -> (int) (o1.getId() - o2.getId()))
-                    .forEach(x -> {
-                        estimateItem.getMaterials().remove(x);
-
-                        ids.add(x.getId());
-                    });
-
-            // Add new items
-            putMaterials.stream().filter(x -> !map22.containsKey(x.getId())).forEach(x -> {
-                estimateItem.getMaterials().add(x);
-                x.setEstimateItem(estimateItem);
-                ids.add(x.getId());
-            });
-
-            // Update items
-            savedMaterials.stream()
-                    .filter(x -> !ids.contains(x.getId()))
-                    .forEach(x -> {
-                        EstimateItemMaterial estimateItemMaterial = map11.get(x.getId());
-
-                        x.setQuantity(estimateItemMaterial.getQuantity());
-                        x.setCostPerWeightUnit(estimateItemMaterial.getCostPerWeightUnit());
-                        x.setTotal(estimateItemMaterial.getTotal());
-                        x.setItemId(estimateItemMaterial.getItemId());
-
-                    });
 
             estimateItem.setGusset(putEstimateItem.getGusset());
             estimateItem.setHandleRatio(putEstimateItem.getHandleRatio());
@@ -251,23 +224,98 @@ public class OrderServiceImpl implements OrderService {
 
         Estimate updatedEstimate = estimateRepository.save(estimate);
 
-        return mapperFactory.getMapperFacade().map(updatedEstimate, EstimateDto.class);
+        return updatedEstimate;
+    }
+
+    private void updateItemMaterials(EstimateItem putEstimateItem, EstimateItem estimateItem) {
+        List<EstimateItemMaterial> putMaterials = putEstimateItem.getMaterials();
+        Map<Long, EstimateItemMaterial> map11 = putMaterials.stream().filter(x -> x.getId() != 0).collect(Collectors.toMap(EstimateItemMaterial::getId, Function.identity()));
+
+        List<EstimateItemMaterial> savedMaterials = estimateItem.getMaterials();
+        Map<Long, EstimateItemMaterial> map22 = savedMaterials.stream().collect(Collectors.toMap(EstimateItemMaterial::getId, Function.identity()));
+
+        Set<Long> ids = new HashSet<>();
+
+        // Remove items
+        savedMaterials.stream()
+                .filter(x -> !map11.containsKey(x.getId()))
+                .sorted((o1, o2) -> (int) (o1.getId() - o2.getId()))
+                .forEach(x -> {
+                    estimateItem.getMaterials().remove(x);
+
+                    ids.add(x.getId());
+                });
+
+        // Add new items
+        putMaterials.stream().filter(x -> !map22.containsKey(x.getId())).forEach(x -> {
+            estimateItem.getMaterials().add(x);
+            x.setEstimateItem(estimateItem);
+
+            ids.add(x.getId());
+        });
+
+        // Update items
+        savedMaterials.stream()
+                .filter(x -> !ids.contains(x.getId()))
+                .forEach(x -> {
+                    EstimateItemMaterial estimateItemMaterial = map11.get(x.getId());
+
+                    x.setQuantity(estimateItemMaterial.getQuantity());
+                    x.setCostPerWeightUnit(estimateItemMaterial.getCostPerWeightUnit());
+                    x.setTotal(estimateItemMaterial.getTotal());
+                    x.setMaterialId(estimateItemMaterial.getMaterialId());
+
+                });
+    }
+
+    private void updateItemExpenses(EstimateItem putEstimateItem, EstimateItem estimateItem) {
+        List<EstimateItemExpense> putExpenses = putEstimateItem.getExpenses();
+        Map<Long, EstimateItemExpense> map11 = putExpenses.stream().filter(x -> x.getId() != 0).collect(Collectors.toMap(EstimateItemExpense::getId, Function.identity()));
+
+        List<EstimateItemExpense> savedMaterials = estimateItem.getExpenses();
+        Map<Long, EstimateItemExpense> map22 = savedMaterials.stream().collect(Collectors.toMap(EstimateItemExpense::getId, Function.identity()));
+
+        Set<Long> ids = new HashSet<>();
+
+        // Remove items
+        savedMaterials.stream()
+                .filter(x -> !map11.containsKey(x.getId()))
+                .sorted((o1, o2) -> (int) (o1.getId() - o2.getId()))
+                .forEach(x -> {
+                    estimateItem.getMaterials().remove(x);
+
+                    ids.add(x.getId());
+                });
+
+        // Add new items
+        putExpenses.stream().filter(x -> !map22.containsKey(x.getId())).forEach(x -> {
+            estimateItem.getExpenses().add(x);
+            x.setEstimateItem(estimateItem);
+
+            ids.add(x.getId());
+        });
+
+        // Update items
+        savedMaterials.stream()
+                .filter(x -> !ids.contains(x.getId()))
+                .forEach(x -> {
+                    EstimateItemExpense estimateItemMaterial = map11.get(x.getId());
+
+                    x.setTotal(estimateItemMaterial.getTotal());
+                    x.setExpenseId(estimateItemMaterial.getExpenseId());
+
+                });
     }
 
     @Override
-    public EstimateDto getEstimateById(long id) {
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-
+    public Estimate getEstimateById(long id) {
         Estimate estimate = estimateRepository.findOne(id);
-        EstimateDto result = mapperFactory.getMapperFacade().map(estimate, EstimateDto.class);
 
-        return result;
+        return estimate;
     }
 
     @Override
-    public EstimateDto getEstimateByOrderId(long orderId) {
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-
+    public Estimate getEstimateByOrderId(long orderId) {
         List<Estimate> estimates = estimateRepository.findByOrderId(orderId);
 
         if (estimates.size() == 0) {
@@ -275,21 +323,8 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Estimate estimate = estimates.get(estimates.size() - 1);
-        mapperFactory.classMap(Estimate.class, EstimateDto.class)
-                .exclude("order")
-                .exclude("items");
 
-        EstimateDto estimateDto = mapperFactory.getMapperFacade().map(estimate, EstimateDto.class);
-        return estimateDto;
+        return estimate;
     }
 
-    @Override
-    public WorkOrderDto getWorkOrderByOrderId(long orderId) {
-        return null;
-    }
-
-    @Override
-    public WorkOrderDto createWorkOrder(WorkOrderDto workOrderDto) {
-        return null;
-    }
 }

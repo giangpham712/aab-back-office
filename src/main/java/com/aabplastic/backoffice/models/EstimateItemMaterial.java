@@ -1,9 +1,13 @@
 package com.aabplastic.backoffice.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
-@Table(name = "estimate_item_material")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Table(name = "estimate_item_materials")
 @Entity
 public class EstimateItemMaterial {
 
@@ -20,13 +24,15 @@ public class EstimateItemMaterial {
     @Column(name = "total", nullable = false)
     private double total;
 
-    @Column(name = "item_id")
-    private long itemId;
+    @Column(name = "material_id")
+    private long materialId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false, insertable = false, updatable = false)
-    private Item item;
+    @JoinColumn(name = "material_id", nullable = false, insertable = false, updatable = false)
+    private Material item;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "estimate_item_id", nullable = false)
     private EstimateItem estimateItem;
@@ -63,19 +69,19 @@ public class EstimateItemMaterial {
         this.total = total;
     }
 
-    public long getItemId() {
-        return itemId;
+    public long getMaterialId() {
+        return materialId;
     }
 
-    public void setItemId(long itemId) {
-        this.itemId = itemId;
+    public void setMaterialId(long materialId) {
+        this.materialId = materialId;
     }
 
-    public Item getItem() {
+    public Material getItem() {
         return item;
     }
 
-    public void setItem(Item item) {
+    public void setItem(Material item) {
         this.item = item;
     }
 

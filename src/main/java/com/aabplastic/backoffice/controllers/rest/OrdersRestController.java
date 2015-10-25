@@ -4,11 +4,15 @@ import com.aabplastic.backoffice.exceptions.ResourceValidationException;
 import com.aabplastic.backoffice.models.Order;
 import com.aabplastic.backoffice.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -16,6 +20,25 @@ public class OrdersRestController {
 
     @Autowired
     private OrderService orderService;
+
+    @RequestMapping(method = RequestMethod.GET)
+    public List<Order> listOrders(Model model, @RequestParam(value = "q", required = false) String search, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit) throws Exception {
+
+        if (page == null) {
+            page = 1;
+        }
+
+        if (limit == null) {
+            limit = 20;
+        }
+
+        if (search == null) {
+            search = "";
+        }
+
+        Page<Order> orders = orderService.listOrders(search, page, limit, "orderNumber", Sort.Direction.ASC);
+        return orders.getContent();
+    }
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)

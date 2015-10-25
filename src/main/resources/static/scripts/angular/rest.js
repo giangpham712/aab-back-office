@@ -40,17 +40,6 @@ angular.module("AAB.rest")
         return BOMs;
     }]);
 
-angular.module("AAB.rest")
-    .service("Items", ["Restangular", function (Restangular) {
-        var Items = Restangular.service("items");
-
-        Restangular.extendModel('items', function (model) {
-            return model;
-        });
-
-        return Items;
-    }]);
-
 
 angular.module("AAB.rest")
     .service("Orders", ["Restangular", function (Restangular) {

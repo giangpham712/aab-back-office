@@ -1,8 +1,5 @@
 package com.aabplastic.backoffice.models.dto;
 
-import javax.persistence.Column;
-import java.util.List;
-
 public class EstimateItemDto {
 
     private long id;
@@ -62,8 +59,6 @@ public class EstimateItemDto {
     private long itemId;
 
     private long orderItemId;
-
-    private List<EstimateItemCostItemDto> costItems;
 
     public long getId() {
         return id;
@@ -297,11 +292,4 @@ public class EstimateItemDto {
         this.orderItemId = orderItemId;
     }
 
-    public List<EstimateItemCostItemDto> getCostItems() {
-        return costItems;
-    }
-
-    public void setCostItems(List<EstimateItemCostItemDto> costItems) {
-        this.costItems = costItems;
-    }
 }

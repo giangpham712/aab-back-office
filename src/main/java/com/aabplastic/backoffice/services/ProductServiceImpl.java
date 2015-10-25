@@ -4,10 +4,12 @@ import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.models.Product;
 import com.aabplastic.backoffice.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -85,6 +87,14 @@ public class ProductServiceImpl implements ProductService {
     public Iterable<Product> listProducts() {
         Iterable<Product> products = productRepository.findAll();
         return products;
+    }
+
+    @Override
+    public Page<Product> listProducts(int pageIndex, int limit, String sortBy, Sort.Direction sortDirection) {
+        Sort sort = new Sort(sortDirection, sortBy);
+        Page<Product> pagedProducts = productRepository.findAll(new PageRequest(pageIndex, limit, sort));
+
+        return pagedProducts;
     }
 
 

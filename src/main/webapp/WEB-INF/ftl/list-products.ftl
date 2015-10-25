@@ -7,7 +7,7 @@
 <#assign top_scripts>
 <script>
     //<![CDATA[
-    window.ViewData = {products: ${products}};
+    window.ViewData = {products: ${products}, totalProducts: ${totalProducts}, totalPages: ${totalPages}};
     //]]>
 </script>
 </#assign>
@@ -57,7 +57,6 @@
                         </button>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="#">Sort by name</a></li>
-                            <li><a href="#">Sort by company</a></li>
                         </ul>
                     </div>
                 </div>
@@ -79,7 +78,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr dir-paginate="product in products | itemsPerPage: 100" total-products="{{totalProducts}}" pagination-id="product">
+                <tr dir-paginate="product in products | itemsPerPage: 200" total-items="{{totalProducts}}"
+                    pagination-id="product">
                     <td class="select">
                         <input type="checkbox">
                     </td>
@@ -92,7 +92,7 @@
                 </tbody>
 
             </table>
-            <dir-pagination-controls class="pull-right" pagination-id="product"></dir-pagination-controls>
+            <dir-pagination-controls class="pull-right" pagination-id="product" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
         </div>
 
     </div>

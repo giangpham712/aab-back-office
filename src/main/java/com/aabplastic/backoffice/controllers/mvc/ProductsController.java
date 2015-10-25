@@ -5,10 +5,13 @@ import com.aabplastic.backoffice.models.Product;
 import com.aabplastic.backoffice.services.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.SimpleDateFormat;
 
@@ -19,12 +22,23 @@ public class ProductsController {
     private ProductService productService;
 
     @RequestMapping("/products")
-    public String listProducts(Model model) throws Exception {
+    public String listProducts(Model model, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit) throws Exception {
 
-        Iterable<Product> products = productService.listProducts();
+        if (page == null) {
+            page = 1;
+        }
+
+        if (limit == null) {
+            limit = 20;
+        }
+
+        Page<Product> pagedProducts = productService.listProducts(page - 1, limit, "name", Sort.Direction.ASC);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
-        String jsonProducts = objectMapper.writeValueAsString(products);
+        String jsonProducts = objectMapper.writeValueAsString(pagedProducts.getContent());
+
+        model.addAttribute("totalPages", pagedProducts.getTotalPages());
+        model.addAttribute("totalProducts", pagedProducts.getTotalElements());
         model.addAttribute("products", jsonProducts);
 
         return "list-products";

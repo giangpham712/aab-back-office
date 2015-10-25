@@ -1,11 +1,41 @@
 angular.module("orders", ["AAB.models", "AAB.rest", "AAB.services", "AAB.schemas", "AAB.directives", "angularUtils.directives.dirPagination"]);
 
 angular.module("orders")
-    .controller("ListOrdersCtrl", ["$scope", "$window", function ($scope, $window) {
+    .controller("ListOrdersCtrl", ["$scope", "$window", "Orders", function ($scope, $window, Orders) {
 
         $scope.orders = window.ViewData.orders;
+        var customers = ViewData.customers;
+        var customerMap = _.indexBy(customers, "id");
+
+        $scope.orders.forEach(function (order) {
+            order.customerName = customerMap[order.customerId].displayName;
+        });
 
         $scope.totalOrders = 10;
+
+        $scope.searchKey = null;
+        $scope.page = ViewData.page;
+        $scope.limit = ViewData.limit;
+
+        $scope.loadOrders = function () {
+
+            Orders.getList({q: $scope.searchKey, page: $scope.page})
+                .then(function (response) {
+                    $scope.orders = response.plain();
+
+                    $scope.orders.forEach(function (order) {
+                        order.customerName = customerMap[order.customerId].displayName;
+                    });
+                }, function (error) {
+                    console.log(error);
+                });
+        };
+
+        $scope.searchOrders = function () {
+            $scope.page = 1;
+
+            $scope.loadOrders();
+        }
 
         $scope.viewOrder = function (order) {
             $window.location.href = "/orders/edit/" + order.id;
@@ -17,7 +47,6 @@ angular.module("orders")
         "$scope",
         "$rootScope",
         "$q",
-        "Items",
         "Products",
         "Orders",
         "NotificationService",
@@ -25,7 +54,6 @@ angular.module("orders")
         function ($scope,
                   $rootScope,
                   $q,
-                  Items,
                   Products,
                   Orders,
                   NotificationService,
@@ -217,7 +245,7 @@ angular.module("orders")
                     Orders.post($scope.order).then(function (response) {
                         var created = response.plain();
                         NotificationService.notifySuccess("Order created successfully");
-                        console.log(created);
+                        window.location.href = "/orders"
                         $rootScope.pageLoading = false;
 
                     }, function (error) {

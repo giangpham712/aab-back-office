@@ -19,6 +19,7 @@ public class ProductsRestController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Product> listProducts() {
+
         Iterable<Product> result = productService.listProducts();
         return result;
     }

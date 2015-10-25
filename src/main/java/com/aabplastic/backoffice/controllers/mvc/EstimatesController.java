@@ -2,7 +2,6 @@ package com.aabplastic.backoffice.controllers.mvc;
 
 import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.models.*;
-import com.aabplastic.backoffice.models.dto.EstimateDto;
 import com.aabplastic.backoffice.models.dto.OrderDto;
 import com.aabplastic.backoffice.services.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,9 +26,6 @@ public class EstimatesController {
 
     @Autowired
     private OrderService orderService;
-
-    @Autowired
-    private ItemService itemService;
 
     @Autowired
     private ProductService productService;
@@ -57,7 +53,7 @@ public class EstimatesController {
             throw new ResourceNotFoundException("Not found");
         }
 
-        EstimateDto existingEstimate = orderService.getEstimateByOrderId(orderId);
+        Estimate existingEstimate = orderService.getEstimateByOrderId(orderId);
 
         if (existingEstimate != null) {
             String redirectUrl = "estimates/edit/" + existingEstimate.getId();
@@ -83,7 +79,7 @@ public class EstimatesController {
             double gusset = (estimateItem.getBlowingWidth() - estimateItem.getWidth()) / 2;
             estimateItem.setGusset(gusset);
 
-            double unitWeight = (estimateItem.getWidth() + gusset * 2) * estimateItem.getLength() * 0.095 * estimateItem.getThickness() * 2 / 100;
+            double unitWeight = (estimateItem.getWidth() + gusset * 2) * estimateItem.getLength() * 0.09 * estimateItem.getThickness() * 2 / 100;
             estimateItem.setUnitWeight(unitWeight);
 
             double totalWeight = unitWeight * estimateItem.getQuantity() / 1000;
@@ -95,7 +91,7 @@ public class EstimatesController {
             double actualThickness = calculateActualThickness(estimateItem.getThickness());
             estimateItem.setActualThickness(actualThickness);
 
-            double actualUnitWeight = (estimateItem.getWidth() + gusset * 2) * estimateItem.getLength() * 0.09 * actualThickness * 2 * 0.9 / 100;
+            double actualUnitWeight = (estimateItem.getWidth() + gusset * 2) * estimateItem.getLength() * 0.09 * actualThickness * 2 / 100;
             estimateItem.setActualUnitWeight(actualUnitWeight);
 
             double actualTotalWeight = actualUnitWeight * estimateItem.getQuantity() / 1000;
@@ -125,13 +121,14 @@ public class EstimatesController {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
 
-        EstimateDto estimate = orderService.getEstimateById(id);
+        Estimate estimate = orderService.getEstimateById(id);
 
         if (estimate == null) {
             throw new ResourceNotFoundException("Not found");
         }
 
         OrderDto order = orderService.getOrderById(estimate.getOrderId());
+
         String jsonOrder = objectMapper.writeValueAsString(order);
 
         estimate.setOrderNumber(order.getOrderNumber());

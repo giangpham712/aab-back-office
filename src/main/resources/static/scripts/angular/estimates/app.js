@@ -4,14 +4,12 @@ angular.module("estimates")
     .controller("EditEstimateCtrl",
     [
         "$scope",
-        "Items",
         "Estimates",
         "BOMs",
         "Estimate",
         "ModalService",
         "NotificationService",
         function ($scope,
-                  Items,
                   Estimates,
                   BOMs,
                   Estimate,
@@ -30,7 +28,9 @@ angular.module("estimates")
             angular.forEach($scope.estimate.items, function (item) {
 
                 item.itemName = productMap[item.productId].name;
-
+                angular.forEach(item.materials, function (material) {
+                    material.itemName = materialMap[material.materialId].name;
+                });
             });
 
             BOMs.getList().then(function (response) {
@@ -42,6 +42,7 @@ angular.module("estimates")
                 if (ViewData.mode === "new") {
                     Estimates.post($scope.estimate).then(function (response) {
                         NotificationService.notifySuccess("Estimate saved successfully");
+                        window.location.href = "/estimates/edit/" + response.plain().id;
                     }, function (error) {
                         NotificationService.notifyError("Estimate cannot be saved due to errors");
                     })
@@ -56,6 +57,7 @@ angular.module("estimates")
 
             var showEditCaculationItem = function (item, index) {
                 $scope.editingItem = angular.copy(item);
+                $scope.editingItem.itemIndex = index;
                 ModalService.showModal("item_production_cost");
             }
 
@@ -70,8 +72,9 @@ angular.module("estimates")
                     $scope.editingItem.materials = bom.items.map(function (item) {
                         var material = {};
                         material.quantity = item.quantity;
-                        material.itemName = materialMap[item.id].name;
-                        material.costPerWeightUnit = materialMap[item.id].unitCost;
+                        material.itemName = materialMap[item.materialId].name;
+                        material.costPerWeightUnit = materialMap[item.materialId].unitCost;
+                        material.materialId = item.materialId;
 
                         return material;
                     });
@@ -83,7 +86,11 @@ angular.module("estimates")
             }
 
             var saveCalculation = function () {
-                console.log($scope.editingItem);
+                var item = $scope.estimate.items[$scope.editingItem.itemIndex];
+                item.materials = $scope.editingItem.materials;
+                item.expenses = $scope.editingItem.expenses;
+
+                ModalService.closeModal("item_production_cost");
             }
 
             // Scope functions

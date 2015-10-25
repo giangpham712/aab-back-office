@@ -1,28 +1,27 @@
 package com.aabplastic.backoffice.services;
 
+import com.aabplastic.backoffice.models.Estimate;
 import com.aabplastic.backoffice.models.Order;
-import com.aabplastic.backoffice.models.dto.EstimateDto;
 import com.aabplastic.backoffice.models.dto.OrderDto;
-import com.aabplastic.backoffice.models.dto.WorkOrderDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 
 public interface OrderService {
     Order create(Order order);
 
-    Iterable<Order> getAllOrders();
+    Iterable<Order> listAllOrders();
+
+    Page<Order> listOrders(String search, int page, int limit, String sortBy, Sort.Direction sortDirection);
 
     OrderDto getOrderById(long id);
 
-    EstimateDto createEstimate(EstimateDto estimateDto);
+    Estimate createEstimate(Estimate estimate);
 
-    EstimateDto updateEstimate(long id, EstimateDto estimateDto);
+    Estimate updateEstimate(long id, Estimate estimate);
 
-    EstimateDto getEstimateById(long id);
+    Estimate getEstimateById(long id);
 
-    EstimateDto getEstimateByOrderId(long orderId);
+    Estimate getEstimateByOrderId(long orderId);
 
     Order update(long savedOrder, Order putOrder);
-
-    WorkOrderDto getWorkOrderByOrderId(long orderId);
-
-    WorkOrderDto createWorkOrder(WorkOrderDto workOrderDto);
 }

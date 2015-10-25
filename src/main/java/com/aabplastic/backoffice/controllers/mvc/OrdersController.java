@@ -5,11 +5,7 @@ import com.aabplastic.backoffice.excel.models.ProductionSheetOrder;
 import com.aabplastic.backoffice.excel.models.ProductionSheetOrderItem;
 import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.locale.MessageByLocaleService;
-import com.aabplastic.backoffice.models.Customer;
-import com.aabplastic.backoffice.models.Order;
-import com.aabplastic.backoffice.models.OrderItem;
-import com.aabplastic.backoffice.models.Product;
-import com.aabplastic.backoffice.models.dto.EstimateDto;
+import com.aabplastic.backoffice.models.*;
 import com.aabplastic.backoffice.models.dto.OrderDto;
 import com.aabplastic.backoffice.services.CustomerService;
 import com.aabplastic.backoffice.services.OrderService;
@@ -18,6 +14,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Iterators;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +29,6 @@ import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -55,24 +52,24 @@ public class OrdersController {
     @RequestMapping(value = "/orders", method = RequestMethod.GET)
     public String listOrders(Model model) throws Exception {
 
-        Iterable<Order> orders = orderService.getAllOrders();
+        int page = 1;
+        int limit = 20;
+        String search = "";
+
+        Page<Order> orders = orderService.listOrders(search, page, limit, "orderNumber", Sort.Direction.ASC);
 
         Iterable<Customer> customers = customerService.getAllCustomers();
 
-        Map<Long, Customer> customersMap = new HashMap<>();
-
-        customers.forEach(customerDto -> {
-            customersMap.put(customerDto.getId(), customerDto);
-        });
-
-        for (Order order : orders) {
-            order.setCustomer(customersMap.get(order.getCustomerId()));
-        }
-
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
-        String jsonOrders = objectMapper.writeValueAsString(orders);
+
+        String jsonOrders = objectMapper.writeValueAsString(orders.getContent());
+        String jsonCustomers = objectMapper.writeValueAsString(customers);
+
+        model.addAttribute("customers", jsonCustomers);
         model.addAttribute("orders", jsonOrders);
+        model.addAttribute("page", page);
+        model.addAttribute("limit", limit);
 
         return "list-orders";
     }
@@ -122,7 +119,7 @@ public class OrdersController {
         Iterable<Customer> customers = customerService.getAllCustomers();
         String jsonCustomers = objectMapper.writeValueAsString(customers);
 
-        EstimateDto estimate = orderService.getEstimateByOrderId(order.getId());
+        Estimate estimate = orderService.getEstimateByOrderId(order.getId());
         String jsonEstimate = objectMapper.writeValueAsString(estimate);
 
         model.addAttribute("order", jsonOrder);
@@ -226,7 +223,7 @@ public class OrdersController {
             double weightPerLengthUnit = actualThickness * item.getBlowingWidth() * 2 * 9 / 10;
             int lengthPerRoll = getLengthPerRoll(weightPerLengthUnit);
             double weightPerRoll = weightPerLengthUnit * lengthPerRoll / 1000;
-            double unitWeight = (item.getWidth() + gusset * 2) * item.getLength() * 0.09 * actualThickness * 2 / 100;
+            double unitWeight = (item.getWidth() + gusset * 2) * item.getLength() * 0.09 * actualThickness * 2 / 110 ;
             double totalWeight = unitWeight * item.getQuantity() / 1000;
             double totalBlowingWeight = totalWeight * 1.16;
             int totalRolls = (int) Math.ceil(totalBlowingWeight / weightPerRoll);

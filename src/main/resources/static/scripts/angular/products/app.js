@@ -5,8 +5,11 @@ angular.module("products")
 
         $scope.products = ViewData.products;
 
-        $scope.totalProducts = ViewData.products.length;
+        $scope.totalProducts = ViewData.totalProducts;
 
+        $scope.pageChanged = function (page) {
+            console.log(page);
+        }
     }]);
 
 
