@@ -1,2 +1,9 @@
 *.class
 *.jar
+build
+out
+bower_components
+.idea
+.gradle
+temp/*
+.DS_Store
