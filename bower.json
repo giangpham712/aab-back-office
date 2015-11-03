@@ -26,6 +26,10 @@
     "angular-selectize2": "~1.2.1",
     "tv4": "~1.1.12",
     "toastr": "~2.1.1",
-    "messenger": "~1.4.2"
+    "messenger": "~1.4.2",
+    "alertify.js": "alertifyjs#~1.0.5"
+  },
+  "resolutions": {
+    "jquery": "2.1.4"
   }
 }
