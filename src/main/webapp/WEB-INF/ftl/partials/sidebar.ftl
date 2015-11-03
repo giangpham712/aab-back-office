@@ -50,7 +50,7 @@
         </li>
         <li class="treeview">
             <a href="#">
-                <i class="glyphicons asterisk"></i> <span>Expense</span> <i class="fa fa-angle-left pull-right"> </i>
+                <i class="glyphicons money"></i> <span>Expenses</span> <i class="fa fa-angle-left pull-right"> </i>
             </a>
             <ul class="treeview-menu">
                 <li class=""><a href="/expenses"><i class="fa fa-circle-o"></i> List Expenses</a></li>

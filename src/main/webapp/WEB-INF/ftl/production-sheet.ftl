@@ -23,7 +23,8 @@
 
 <@layout.admin sidebar_class="sidebar-collapse" content_header_title="${headerTitle}" stylesheets=stylesheets top_scripts=top_scripts bottom_scripts=bottom_scripts ng_app="orders">
 <div class="row clearfix" ng-controller="OrderProductionSheetCtrl">
-    <form name="orderProductionSheetForm" action="/orders/productionsheet/6" class="clearfix" method="POST">
+    <form name="orderProductionSheetForm" action="{{ '/orders/productionsheet/' + order.id }}" class="clearfix" method="POST">
+
         <div class="col-xs-12">
             <div class="margin-bottom-20">
 
@@ -32,7 +33,7 @@
                         <label>${message.getMessage('order.order')}: </label>
                     </div>
                     <div class="col-md-2">
-                        <a href="/orders/edit/{{order.orderId}}">{{order.orderNumber}}</a>
+                        <a href="/orders/edit/{{order.id}}">{{order.orderNumber}}</a>
                     </div>
                 </div>
 
