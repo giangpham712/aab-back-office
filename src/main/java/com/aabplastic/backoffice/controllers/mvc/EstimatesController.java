@@ -91,7 +91,7 @@ public class EstimatesController {
             double actualThickness = calculateActualThickness(estimateItem.getThickness());
             estimateItem.setActualThickness(actualThickness);
 
-            double actualUnitWeight = (estimateItem.getWidth() + gusset * 2) * estimateItem.getLength() * 0.09 * actualThickness * 2 / 100;
+            double actualUnitWeight = (estimateItem.getWidth() + gusset * 2) * estimateItem.getLength() * 0.09 * actualThickness * 2 / 110;
             estimateItem.setActualUnitWeight(actualUnitWeight);
 
             double actualTotalWeight = actualUnitWeight * estimateItem.getQuantity() / 1000;
