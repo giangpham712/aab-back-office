@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.SimpleDateFormat;
 
@@ -22,17 +21,13 @@ public class ProductsController {
     private ProductService productService;
 
     @RequestMapping("/products")
-    public String listProducts(Model model, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit) throws Exception {
+    public String listProducts(Model model) throws Exception {
 
-        if (page == null) {
-            page = 1;
-        }
+        int page = 1;
+        int limit = 20;
+        String search = "";
 
-        if (limit == null) {
-            limit = 20;
-        }
-
-        Page<Product> pagedProducts = productService.listProducts(page - 1, limit, "name", Sort.Direction.ASC);
+        Page<Product> pagedProducts = productService.listProducts(search, page - 1, limit, "name", Sort.Direction.ASC);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
         String jsonProducts = objectMapper.writeValueAsString(pagedProducts.getContent());

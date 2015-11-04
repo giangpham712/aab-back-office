@@ -9,6 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
+import java.text.MessageFormat;
 import java.util.Date;
 
 @Service
@@ -80,7 +82,9 @@ public class ProductServiceImpl implements ProductService {
             throw new ResourceNotFoundException(String.format("Product with id %d cannot be found", id));
         }
 
-        productRepository.delete(deleted);
+
+
+        productRepository.save(deleted);
     }
 
     @Override
@@ -90,11 +94,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> listProducts(int pageIndex, int limit, String sortBy, Sort.Direction sortDirection) {
-        Sort sort = new Sort(sortDirection, sortBy);
-        Page<Product> pagedProducts = productRepository.findAll(new PageRequest(pageIndex, limit, sort));
+    public Page<Product> listProducts(String search, int page, int limit, String sortBy, Sort.Direction sortDirection) {
 
-        return pagedProducts;
+        PageRequest pageable = new PageRequest(page - 1, limit, new Sort(sortDirection, sortBy));
+        Page<Product> products = productRepository.findByNameLikeAndDeletedFalse(MessageFormat.format("%{0}%", search), pageable);
+        return products;
     }
 
 

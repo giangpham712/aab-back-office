@@ -16,6 +16,6 @@ public interface ProductService {
 
     Iterable<Product> listProducts();
 
-    Page<Product> listProducts(int pageIndex, int limit, String sortBy, Sort.Direction sortDirection);
+    Page<Product> listProducts(String search, int pageIndex, int limit, String sortBy, Sort.Direction sortDirection);
 }
 

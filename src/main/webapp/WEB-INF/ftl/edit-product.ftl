@@ -32,6 +32,24 @@
                                ng-model="product.name"
                                required>
                     </div>
+                    <div class="col-md-5"></div>
+
+                    <div class="col-md-4 text-right" ng-show="product.id">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default"><i class="fa fa-cog"></i></button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li ng-if="product.active"><a href="javascript:void(0);" ng-click="setInactive(product)">Set inactive</a></li>
+                                <li ng-if="!product.active"><a href="javascript:void(0);" ng-click="setActive(product)">Set active</a></li>
+                                <li><a href="javascript:void(0);" ng-click="deleteProduct(product)">Delete</a></li>
+
+                            </ul>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="row clearfix margin-bottom-10">
                     <div class="col-md-5">
@@ -49,11 +67,13 @@
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li role="presentation" class="active">
-                        <a href data-target="#product_information" aria-controls="product_information" role="tab" data-toggle="tab">Product
+                        <a href data-target="#product_information" aria-controls="product_information" role="tab"
+                           data-toggle="tab">Product
                             information</a>
                     </li>
                     <li role="presentation">
-                        <a href data-target="#bill_of_materials" aria-controls="bill_of_materials" role="tab" data-toggle="tab">Bills
+                        <a href data-target="#bill_of_materials" aria-controls="bill_of_materials" role="tab"
+                           data-toggle="tab">Bills
                             of materials</a>
                     </li>
                 </ul>

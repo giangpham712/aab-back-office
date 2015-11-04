@@ -4,7 +4,10 @@ import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.models.Product;
 import com.aabplastic.backoffice.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,10 +21,26 @@ public class ProductsRestController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public Iterable<Product> listProducts() {
+    public Iterable<Product> listProducts(
+            Model model,
+            @RequestParam(value = "q", required = false) String search,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer limit) {
 
-        Iterable<Product> result = productService.listProducts();
-        return result;
+        if (page == null) {
+            page = 1;
+        }
+
+        if (limit == null) {
+            limit = 20;
+        }
+
+        if (search == null) {
+            search = "";
+        }
+
+        Page<Product> products = productService.listProducts(search, page, limit, "name", Sort.Direction.ASC);
+        return products.getContent();
     }
 
     /***
@@ -68,4 +87,15 @@ public class ProductsRestController {
         return updated;
     }
 
+    /***
+     * Delete a specific product
+     *
+     * @return
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable long id) {
+        productService.delete(id);
+
+    }
 }

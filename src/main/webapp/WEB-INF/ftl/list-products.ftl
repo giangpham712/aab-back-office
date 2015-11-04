@@ -62,8 +62,9 @@
                 </div>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Find by product name"/>
-                        <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                        <input type="text" class="form-control" ng-model="searchKey" placeholder="Find by product name"/>
+                        <span class="input-group-addon" ng-click="searchProducts()"><span
+                                class="glyphicon glyphicon-search"></span></span>
                     </div>
                 </div>
 

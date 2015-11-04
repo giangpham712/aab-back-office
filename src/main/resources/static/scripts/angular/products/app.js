@@ -7,6 +7,27 @@ angular.module("products")
 
         $scope.totalProducts = ViewData.totalProducts;
 
+        $scope.searchKey = null;
+        $scope.page = ViewData.page;
+        $scope.limit = ViewData.limit;
+
+        $scope.loadProducts = function () {
+
+            Products.getList({q: $scope.searchKey, page: $scope.page})
+                .then(function (response) {
+                    $scope.products = response.plain();
+
+                }, function (error) {
+                    console.log(error);
+                });
+        };
+
+        $scope.searchProducts = function () {
+            $scope.page = 1;
+
+            $scope.loadProducts();
+        }
+
         $scope.pageChanged = function (page) {
             console.log(page);
         }
@@ -25,6 +46,18 @@ angular.module("products")
         $scope.embossTypes = ["Không nhám", "Nhám hoa", "Nhám gai", "Nhám tứ giác"];
         $scope.printingTypes = ["0C/0S", "1C/1S", "1C/2S", "2C/1S"];
         $scope.outerbagPrintingTypes = ["0C/0S", "1C/1S", "2C/1S"];
+
+        $scope.deleteProduct = function (product) {
+
+        }
+
+        $scope.setActive = function (product) {
+
+        }
+
+        $scope.setInactive = function (product) {
+
+        }
 
         $scope.saveProduct = function () {
             $rootScope.pageLoading = true;
