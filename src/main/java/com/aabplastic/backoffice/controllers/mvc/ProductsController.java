@@ -27,7 +27,7 @@ public class ProductsController {
         int limit = 200;
         String search = "";
 
-        Page<Product> pagedProducts = productService.listProducts(search, page - 1, limit, "name", Sort.Direction.ASC);
+        Page<Product> pagedProducts = productService.listProducts(search, page, limit, "name", Sort.Direction.ASC);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
         String jsonProducts = objectMapper.writeValueAsString(pagedProducts.getContent());
