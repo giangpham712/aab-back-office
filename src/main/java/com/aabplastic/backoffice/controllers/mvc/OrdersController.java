@@ -66,6 +66,7 @@ public class OrdersController {
         String jsonOrders = objectMapper.writeValueAsString(orders.getContent());
         String jsonCustomers = objectMapper.writeValueAsString(customers);
 
+        model.addAttribute("totalPages", orders.getTotalPages());
         model.addAttribute("customers", jsonCustomers);
         model.addAttribute("orders", jsonOrders);
         model.addAttribute("page", page);

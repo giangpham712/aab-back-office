@@ -24,7 +24,7 @@ public class ProductsController {
     public String listProducts(Model model) throws Exception {
 
         int page = 1;
-        int limit = 20;
+        int limit = 200;
         String search = "";
 
         Page<Product> pagedProducts = productService.listProducts(search, page - 1, limit, "name", Sort.Direction.ASC);
@@ -35,6 +35,8 @@ public class ProductsController {
         model.addAttribute("totalPages", pagedProducts.getTotalPages());
         model.addAttribute("totalProducts", pagedProducts.getTotalElements());
         model.addAttribute("products", jsonProducts);
+        model.addAttribute("page", page);
+        model.addAttribute("limit", limit);
 
         return "list-products";
     }
