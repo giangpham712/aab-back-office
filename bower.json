@@ -27,7 +27,7 @@
     "tv4": "~1.1.12",
     "toastr": "~2.1.1",
     "messenger": "~1.4.2",
-    "alertify.js": "alertifyjs#~1.0.5"
+    "alertifyjs": "latest"
   },
   "resolutions": {
     "jquery": "2.1.4"
