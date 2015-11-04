@@ -35,11 +35,17 @@ public class Order {
     @Column(name = "total", nullable = false)
     private double total;
 
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
+
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
     @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
+
+    @Column(name = "deleted_at", nullable = true)
+    private Date deletedAt;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
@@ -125,6 +131,14 @@ public class Order {
         this.total = total;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -139,6 +153,14 @@ public class Order {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public List<OrderItem> getItems() {

@@ -101,8 +101,9 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                 <li><a href="javascript:void(0);" ng-click="viewOrder(order)">View</a></li>
-                                <li><a href="javascript:void(0);">Print production sheet</a></li>
+                                <li><a href="javascript:void(0);" ng-click="viewProductionSheet(order)">Print production sheet</a></li>
                                 <li><a href="javascript:void(0);">View estimate</a></li>
+                                <li><a href="javascript:void(0);" ng-click="deleteOrder(order)">Delete</a></li>
                             </ul>
                         </div>
                     </td>

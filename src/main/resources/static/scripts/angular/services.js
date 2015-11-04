@@ -6,10 +6,12 @@ angular.module("AAB.services")
 
 
         this.notifySuccess = function (message) {
+            alertify.logPosition("right");
             alertify.success('<i class="icon fa fa-check"></i><span class="title">Successful</span><span class="message">' + message + '</span>');
         }
 
         this.notifyError = function (message) {
+            alertify.logPosition("right");
             alertify.error('<i class="icon fa fa-times"></i><span class="title">Error</span></i><span class="message">' + message + '</span>');
         }
 

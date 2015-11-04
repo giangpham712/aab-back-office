@@ -161,7 +161,7 @@
                                 </td>
 
                                 <td class="" style="width: 110px" ng-click="showEditCaculationItem(item, $index)"><span>
-                                    <a href="javascript:void(0)">{{item.getCostPerWeightUnit()}}</a>
+                                    <a href="javascript:void(0)">{{item.getCostPerWeightUnit() | number}}</a>
                                 </span></td>
                                 <td class="" style="width: 110px"><span>{{item.getTotal() | currency:'':3}}</span></td>
                             </tr>

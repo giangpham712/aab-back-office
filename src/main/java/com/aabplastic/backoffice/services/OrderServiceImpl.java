@@ -1,5 +1,6 @@
 package com.aabplastic.backoffice.services;
 
+import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.models.*;
 import com.aabplastic.backoffice.models.dto.OrderDto;
 import com.aabplastic.backoffice.repositories.EstimateRepository;
@@ -58,7 +59,6 @@ public class OrderServiceImpl implements OrderService {
         Map<Long, OrderItem> map2 = orderItems.stream().collect(Collectors.toMap(OrderItem::getId, Function.identity()));
 
         Set<Long> ids = new HashSet<Long>();
-
 
         // Remove items
         orderItems.stream()
@@ -124,12 +124,27 @@ public class OrderServiceImpl implements OrderService {
         return updatedOrder;
     }
 
+    @Override
+    public void delete(long id) {
+        Order order = orderRepository.findOne(id);
+
+        if (order == null) {
+            throw new ResourceNotFoundException(MessageFormat.format("Order with id {0} cannot be found", id));
+        }
+
+        Date now = new Date();
+
+        order.setDeleted(true);
+        order.setDeletedAt(now);
+
+        Order deletedOrder = orderRepository.save(order);
+    }
 
 
     @Override
     public Iterable<Order> listAllOrders() {
 
-        List<Order> orders = orderRepository.findAll();
+        List<Order> orders = orderRepository.findAllByDeletedFalse();
 
         return orders;
     }
@@ -137,7 +152,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<Order> listOrders(String search, int page, int limit, String sortBy, Sort.Direction sortDirection) {
         PageRequest pageable = new PageRequest(page - 1, limit, new Sort(sortDirection, sortBy));
-        Page<Order> orders = orderRepository.findByOrderNumberLike(MessageFormat.format("%{0}%", search), pageable);
+        Page<Order> orders = orderRepository.findByOrderNumberLikeAndDeletedFalse(MessageFormat.format("%{0}%", search), pageable);
         return orders;
     }
 

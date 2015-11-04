@@ -24,4 +24,6 @@ public interface OrderService {
     Estimate getEstimateByOrderId(long orderId);
 
     Order update(long savedOrder, Order putOrder);
+
+    void delete(long id);
 }

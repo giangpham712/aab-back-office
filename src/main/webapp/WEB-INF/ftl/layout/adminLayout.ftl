@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/bower_components/jquery-icheck/skins/minimal/blue.css"/>
     <link rel="stylesheet" type="text/css" href="/bower_components/selectize/dist/css/selectize.bootstrap3.css"/>
 
-    <link rel="stylesheet" type="text/css" href="/bower_components/alertify.js/dist/css/alertify.css"/>
+    <link rel="stylesheet" type="text/css" href="/bower_components/alertifyjs/dist/css/alertify.css"/>
 
 
     <link rel="stylesheet" type="text/css" href="/css/glyphicons.css"/>
@@ -72,7 +72,7 @@ ${top_scripts}
 <script type="text/javascript" src="/bower_components/selectize/dist/js/standalone/selectize.min.js"></script>
 <script type="text/javascript" src="/bower_components/angular-selectize2/dist/selectize.js"></script>
 <script type="text/javascript" src="/bower_components/autoNumeric/autoNumeric.js"></script>
-<script type="text/javascript" src="/bower_components/alertify.js/dist/js/alertify.js"></script>
+<script type="text/javascript" src="/bower_components/alertifyjs/dist/js/alertify.js"></script>
 
 <script type="text/javascript" src="/scripts/main.js"></script>
 <script type="text/javascript" src="/scripts/angular/models.js"></script>

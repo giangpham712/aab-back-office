@@ -1,7 +1,7 @@
 angular.module("orders", ["AAB.models", "AAB.rest", "AAB.services", "AAB.schemas", "AAB.directives", "angularUtils.directives.dirPagination"]);
 
 angular.module("orders")
-    .controller("ListOrdersCtrl", ["$scope", "$window", "Orders", function ($scope, $window, Orders) {
+    .controller("ListOrdersCtrl", ["$scope", "$window", "Orders", "NotificationService", function ($scope, $window, Orders, NotificationService) {
 
         $scope.orders = window.ViewData.orders;
         var customers = ViewData.customers;
@@ -39,6 +39,22 @@ angular.module("orders")
 
         $scope.viewOrder = function (order) {
             $window.location.href = "/orders/edit/" + order.id;
+        }
+
+        $scope.viewProductionSheet = function (order) {
+            $window.location.href = "/orders/productionsheet/" + order.id;
+        }
+
+        $scope.deleteOrder = function (order) {
+            var confirmDelete = confirm("Are you sure you want to delete this order?");
+            if (!confirmDelete) { return; }
+
+            Orders.one(order.id).remove().then(function (response) {
+                NotificationService.notifySuccess("Order deleted successfully");
+                $scope.loadOrders();
+            }, function (error) {
+                NotificationService.notifySuccess("Order cannot be deleted");
+            });
         }
     }]);
 

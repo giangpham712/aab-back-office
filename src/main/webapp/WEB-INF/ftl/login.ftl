@@ -44,7 +44,7 @@
 
     </div><!-- /.login-box-body -->
 </div><!-- /.login-box -->
-<script src="/bower_components/jquery/jquery.min.js"></script>
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="/bower_components/jquery-icheck/icheck.min.js"></script>
 <script>
     $(function () {

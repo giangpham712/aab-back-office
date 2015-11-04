@@ -502,7 +502,7 @@ span.required {
     color: #fff;
 }
 
-.alertify-log i,
+.alertify-logs i,
 .alertify-log-success i,
 .alertify-log-error i {
 
@@ -510,7 +510,7 @@ span.required {
 
 }
 
-.alertify-log .title,
+.alertify-logs .title,
 .alertify-log-success .title,
 .alertify-log-error .title {
     display: inline-block;
@@ -519,7 +519,7 @@ span.required {
     margin-bottom: 5px;
 }
 
-.alertify-log .message,
+.alertify-logs .message,
 .alertify-log-success .message,
 .alertify-log-error .message {
     display: block;

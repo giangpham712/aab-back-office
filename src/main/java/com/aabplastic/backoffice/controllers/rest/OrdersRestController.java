@@ -63,4 +63,11 @@ public class OrdersRestController {
 
         return updated;
     }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOrder(@PathVariable long id) {
+
+        orderService.delete(id);
+    }
 }
