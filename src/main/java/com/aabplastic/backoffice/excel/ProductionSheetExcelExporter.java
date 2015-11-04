@@ -76,6 +76,14 @@ public class ProductionSheetExcelExporter {
                     sheet.setMargin(Sheet.RightMargin, rightMargin);
                     sheet.setMargin(Sheet.TopMargin, topMargin);
                     sheet.setMargin(Sheet.BottomMargin, bottomMargin);
+
+                    sheet.getOddHeader().setLeft(templateSheet.getOddHeader().getLeft());
+                    sheet.getOddHeader().setCenter(templateSheet.getOddHeader().getCenter());
+                    sheet.getOddHeader().setRight(templateSheet.getOddHeader().getRight());
+
+                    sheet.getEvenHeader().setLeft(templateSheet.getOddHeader().getLeft());
+                    sheet.getEvenHeader().setCenter(templateSheet.getOddHeader().getCenter());
+                    sheet.getEvenHeader().setRight(templateSheet.getOddHeader().getRight());
                 }
 
                 transformer.write();
