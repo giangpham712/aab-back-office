@@ -1,11 +1,39 @@
 angular.module("boms", ["AAB.rest", "AAB.directives", "AAB.services", "angularUtils.directives.dirPagination"]);
 
 angular.module("boms")
-    .controller("ListBOMsCtrl", ["$scope", "$location", "BOMs", function ($scope, $location, BOMs) {
+    .controller("ListBOMsCtrl", ["$scope", "$location", "BOMs", "NotificationService", function ($scope, $location, BOMs, NotificationService) {
 
         $scope.boms = ViewData.boms;
 
         $scope.totalBOMs = ViewData.boms.length;
+
+        $scope.loadBOMs = function () {
+
+            BOMs.getList({q: $scope.searchKey, page: $scope.page})
+                .then(function (response) {
+                    $scope.boms = response.plain();
+                }, function (error) {
+                    console.log(error);
+                });
+        };
+
+        $scope.viewBOM = function (bom) {
+            window.location.href = "/boms/edit/" + bom.id;
+        }
+
+        $scope.deleteBOM = function (bom) {
+            var confirmDelete = confirm("Are you sure you want to delete this bill of materials?");
+            if (!confirmDelete) {
+                return;
+            }
+
+            BOMs.one(bom.id).remove().then(function (response) {
+                NotificationService.notifySuccess("Bill of materials deleted successfully");
+                $scope.loadBOMs();
+            }, function (error) {
+                NotificationService.notifySuccess("Bill of materials cannot be deleted");
+            });
+        }
 
     }]);
 
@@ -40,7 +68,9 @@ angular.module("boms")
 
             $scope.$watch("bom.items", function (items) {
 
-                var totalQuantity = _.reduce(items, function (memo, item) { return parseFloat(memo) + parseFloat(item.quantity); }, 0);
+                var totalQuantity = _.reduce(items, function (memo, item) {
+                    return parseFloat(memo) + parseFloat(item.quantity);
+                }, 0);
 
                 angular.forEach(items, function (item) {
                     item.ratio = item.quantity / totalQuantity * 100;
@@ -59,7 +89,7 @@ angular.module("boms")
                 materialMap = _.indexBy($scope.materials, "id");
 
                 angular.forEach($scope.bom.items, function (item) {
-                   item.materialName = materialMap[item.materialId].name;
+                    item.materialName = materialMap[item.materialId].name;
                 });
             });
 
@@ -70,7 +100,7 @@ angular.module("boms")
                     ratio: 0
                 };
 
-                var material =  materialMap[newItem.materialId];
+                var material = materialMap[newItem.materialId];
 
                 if (material == null) {
                     console.log("Please select a material");

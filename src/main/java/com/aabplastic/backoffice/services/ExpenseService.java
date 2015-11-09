@@ -10,4 +10,6 @@ public interface ExpenseService {
     Expense create(Expense expense);
 
     Expense update(long id, Expense expense);
+
+    Iterable<Expense> listDefaultExpenses();
 }

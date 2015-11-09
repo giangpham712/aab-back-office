@@ -6,7 +6,7 @@
 <#assign top_scripts>
 <script>
     //<![CDATA[
-    window.ViewData = {product: ${product}, mode: "${mode}"};
+    window.ViewData = {product: ${product}, boms: ${boms}, mode: "${mode}"};
     //]]>
 </script>
 </#assign>
@@ -42,8 +42,10 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                <li ng-if="product.active"><a href="javascript:void(0);" ng-click="setInactive(product)">Set inactive</a></li>
-                                <li ng-if="!product.active"><a href="javascript:void(0);" ng-click="setActive(product)">Set active</a></li>
+                                <li ng-if="product.active"><a href="javascript:void(0);"
+                                                              ng-click="setInactive(product)">Set inactive</a></li>
+                                <li ng-if="!product.active"><a href="javascript:void(0);" ng-click="setActive(product)">Set
+                                    active</a></li>
                                 <li><a href="javascript:void(0);" ng-click="deleteProduct(product)">Delete</a></li>
 
                             </ul>
@@ -203,7 +205,17 @@
                     </div>
 
                     <div class="tab-pane clearfix" id="bill_of_materials">
-
+                        <div>
+                            <div class="clearfix margin-bottom-20">
+                                <div class="col-md-4" style="margin-bottom: 10px">
+                                    <label class="small">Default bill of materials</label>
+                                    <selectize class="form-control"
+                                               ng-model="product.defaultBillId"
+                                               config="{ valueField: 'id', labelField: 'name', searchField: 'name', maxItems: 1, placeholder: 'Select a bill of materials' }"
+                                               options="boms"></selectize>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

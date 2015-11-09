@@ -52,4 +52,9 @@ public class ExpenseServiceImpl implements ExpenseService {
         updated = expenseRepository.save(expense);
         return updated;
     }
+
+    @Override
+    public Iterable<Expense> listDefaultExpenses() {
+        return expenseRepository.findAllByDefaultExpenseTrue();
+    }
 }

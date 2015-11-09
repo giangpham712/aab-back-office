@@ -83,6 +83,9 @@ public class Product {
     @Column(name = "outerbagPrinting")
     private String outerbagPrinting;
 
+    @Column(name = "default_bill_id")
+    private long defaultBillOfMaterialsId;
+
     public long getId() {
         return id;
     }
@@ -265,5 +268,13 @@ public class Product {
 
     public void setOuterbagPrinting(String outerbagPrinting) {
         this.outerbagPrinting = outerbagPrinting;
+    }
+
+    public long getDefaultBillOfMaterialsId() {
+        return defaultBillOfMaterialsId;
+    }
+
+    public void setDefaultBillOfMaterialsId(long defaultBillOfMaterialsId) {
+        this.defaultBillOfMaterialsId = defaultBillOfMaterialsId;
     }
 }

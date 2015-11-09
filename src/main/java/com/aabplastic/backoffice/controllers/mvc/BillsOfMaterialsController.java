@@ -2,15 +2,12 @@ package com.aabplastic.backoffice.controllers.mvc;
 
 import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.models.BillOfMaterials;
-import com.aabplastic.backoffice.models.Material;
 import com.aabplastic.backoffice.services.BillOfMaterialsService;
 import com.aabplastic.backoffice.services.MaterialService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,9 +26,13 @@ public class BillsOfMaterialsController {
     private MaterialService materialService;
 
     @RequestMapping("/boms")
-    public String listBillOfMaterialss(Model model) throws Exception {
+    public String listBOMs(Model model) throws Exception {
 
-        Iterable<BillOfMaterials> boms = billOfMaterialsService.listBOMs();
+        int page = 1;
+        int limit = 20;
+        String search = "";
+
+        Page<BillOfMaterials> boms = billOfMaterialsService.listBOMs(search, page, limit, "name", Sort.Direction.ASC);
         boms.forEach(x -> {
             x.setItems(new ArrayList<>());
         });
@@ -39,14 +40,14 @@ public class BillsOfMaterialsController {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
 
-        String jsonBoms = objectMapper.writeValueAsString(boms);
+        String jsonBoms = objectMapper.writeValueAsString(boms.getContent());
         model.addAttribute("boms", jsonBoms);
 
         return "list-boms";
     }
 
     @RequestMapping("/boms/new")
-    public String newBillOfMaterials(Model model) throws Exception {
+    public String newBOM(Model model) throws Exception {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
@@ -60,7 +61,7 @@ public class BillsOfMaterialsController {
     }
 
     @RequestMapping("/boms/edit/{id}")
-    public String editBillOfMaterials(@PathVariable long id, Model model) throws Exception {
+    public String editBOM(@PathVariable long id, Model model) throws Exception {
 
         BillOfMaterials bom = billOfMaterialsService.getBOMById(id);
 

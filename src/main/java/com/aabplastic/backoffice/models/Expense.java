@@ -20,11 +20,23 @@ public class Expense {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "default_expense", nullable = false)
+    private boolean defaultExpense;
+
+    @Column(name = "default_cost")
+    private double defaultCost;
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
+
     @Column(name = "created_at")
     private Date createdAt;
 
     @Column(name = "updated_at")
     private Date updatedAt;
+
+    @Column(name = "deleted_at")
+    private Date deletedAt;
 
     public long getId() {
         return id;
@@ -48,6 +60,38 @@ public class Expense {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isDefaultExpense() {
+        return defaultExpense;
+    }
+
+    public void setDefaultExpense(boolean defaultExpense) {
+        this.defaultExpense = defaultExpense;
+    }
+
+    public double getDefaultCost() {
+        return defaultCost;
+    }
+
+    public void setDefaultCost(double defaultCost) {
+        this.defaultCost = defaultCost;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public Date getCreatedAt() {

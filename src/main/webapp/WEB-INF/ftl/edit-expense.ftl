@@ -42,9 +42,44 @@
                         </textarea>
                     </div>
                 </div>
+                <div class="row clearfix margin-bottom-10">
+                    <div class="col-md-5">
+                        <label class="small">Default expense</label>
+                        <br/>
+                        <label class="custom-checkbox">
+                            <input type="checkbox" custom-checkbox="" ng-model="expense.defaultExpense"
+                                   name="defaultExpense"/>
+                            <small>Enable to add this expense to product production cost by default</small>
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="col-xs-8">
 
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li role="presentation" class="active">
+                        <a href data-target="#expense_information" aria-controls="expense_information" role="tab"
+                           data-toggle="tab">Expense information</a>
+                    </li>
+                </ul>
+                <div class="tab-content" ng-cloak>
+                    <div class="tab-pane clearfix active" id="expense_information">
+                        <div>
+                            <div class="clearfix margin-bottom-20">
+                                <div class="col-md-3" style="margin-bottom: 10px">
+                                    <label class="small">Default cost (USD)</label>
+                                    <input type="text" class="form-control" placeholder="Default cost"
+                                           ng-model="expense.defaultCost">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="height: 150px;"></div>
+        </div>
         <div class="bottom-bar">
             <div>
                 <button class="btn btn-default">Cancel</button>

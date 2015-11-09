@@ -5,8 +5,12 @@ import com.aabplastic.backoffice.models.BillOfMaterials;
 import com.aabplastic.backoffice.models.BillOfMaterialsItem;
 import com.aabplastic.backoffice.repositories.BillOfMaterialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -97,5 +101,28 @@ public class BillOfMaterialsServiceImpl implements BillOfMaterialsService {
 
         updated = bomRepository.save(finalUpdated);
         return updated;
+    }
+
+    @Override
+    public void delete(long id) {
+        BillOfMaterials deleted = bomRepository.findOne(id);
+
+        if (deleted == null) {
+            throw new ResourceNotFoundException(String.format("Bill of materials with id %d cannot be found", id));
+        }
+
+        Date now = new Date();
+
+        deleted.setDeleted(true);
+        deleted.setDeletedAt(now);
+
+        bomRepository.save(deleted);
+    }
+
+    @Override
+    public Page<BillOfMaterials> listBOMs(String search, int page, int limit, String sortBy, Sort.Direction sortDirection) {
+        PageRequest pageable = new PageRequest(page - 1, limit, new Sort(sortDirection, sortBy));
+        Page<BillOfMaterials> orders = bomRepository.findByNameLikeAndDeletedFalse(MessageFormat.format("%{0}%", search), pageable);
+        return orders;
     }
 }

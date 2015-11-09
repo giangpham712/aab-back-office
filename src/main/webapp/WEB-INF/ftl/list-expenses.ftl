@@ -75,11 +75,11 @@
                     <th></th>
                     <th>Expense</th>
                     <th></th>
-                    <th>Action</th>
+                    <th style="width: 120px">Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr dir-paginate="expense in expenses | itemsPerPage: 100" total-expenses="{{totalExpenses}}" pagination-id="expense">
+                <tr dir-paginate="expense in expenses | itemsPerPage: 200" total-expenses="{{totalExpenses}}" pagination-id="expense">
                     <td class="select">
                         <input type="checkbox">
                     </td>
@@ -87,7 +87,20 @@
                         <a href="{{ '/expenses/edit/' +  expense.id }}"><h3 ng-bind="expense.name"></h3></a>
                     </td>
                     <td><span ng-bind=""></span></td>
-                    <td></td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
+                                    aria-expanded="false">
+                                Action &nbsp;
+                                <i class="fa fa-caret-down"></i>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li><a href="javascript:void(0);" ng-click="viewExpense(expense)">View</a></li>
+                                <li><a href="javascript:void(0);" ng-click="deleteExpense(expense)">Delete</a></li>
+                            </ul>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
 

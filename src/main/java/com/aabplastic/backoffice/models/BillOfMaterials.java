@@ -1,10 +1,13 @@
 package com.aabplastic.backoffice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "bill_of_materials")
 public class BillOfMaterials {
@@ -22,11 +25,17 @@ public class BillOfMaterials {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "bill")
     private List<BillOfMaterialsItem> items;
 
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
+
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
     @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
+
+    @Column(name = "deleted_at")
+    private Date deletedAt;
 
     public BillOfMaterials() {
         items = new ArrayList<>();
@@ -70,6 +79,14 @@ public class BillOfMaterials {
         this.items = items;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -86,4 +103,11 @@ public class BillOfMaterials {
         this.updatedAt = updatedAt;
     }
 
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
+    }
 }

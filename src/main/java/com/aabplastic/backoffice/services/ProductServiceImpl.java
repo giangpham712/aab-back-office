@@ -48,6 +48,8 @@ public class ProductServiceImpl implements ProductService {
         updated.setName(product.getName());
         updated.setDescription(product.getDescription());
 
+        updated.setDefaultBillOfMaterialsId(product.getDefaultBillOfMaterialsId());
+
         updated.setBagType(product.getBagType());
         updated.setBlowingWidth(product.getBlowingWidth());
         updated.setDescription(product.getDescription());
@@ -81,7 +83,9 @@ public class ProductServiceImpl implements ProductService {
             throw new ResourceNotFoundException(String.format("Product with id %d cannot be found", id));
         }
 
-
+        Date now = new Date();
+        deleted.setDeleted(true);
+        deleted.setDeletedAt(now);
 
         productRepository.save(deleted);
     }

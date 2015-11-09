@@ -3,7 +3,10 @@ package com.aabplastic.backoffice.controllers.mvc;
 import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.models.*;
 import com.aabplastic.backoffice.models.dto.OrderDto;
-import com.aabplastic.backoffice.services.*;
+import com.aabplastic.backoffice.services.ExpenseService;
+import com.aabplastic.backoffice.services.MaterialService;
+import com.aabplastic.backoffice.services.OrderService;
+import com.aabplastic.backoffice.services.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -19,7 +22,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Controller
 public class EstimatesController {
@@ -67,6 +72,8 @@ public class EstimatesController {
 
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 
+        Iterable<Expense> defaultExpenses = expenseService.listDefaultExpenses();
+
         estimate.setItems(order.getItems().stream().map(orderItem -> {
 
             EstimateItem estimateItem = mapperFactory.getMapperFacade().map(orderItem, EstimateItem.class);
@@ -99,6 +106,15 @@ public class EstimatesController {
 
             double actualPricePerWeightUnit = estimateItem.getTotal() / actualTotalWeight;
             estimateItem.setActualPricePerWeightUnit(actualPricePerWeightUnit);
+
+            List<EstimateItemExpense> expenses = StreamSupport.stream(defaultExpenses.spliterator(), false).map(x -> {
+                EstimateItemExpense expense = new EstimateItemExpense();
+                expense.setExpenseId(x.getId());
+                expense.setTotal(x.getDefaultCost());
+                return expense;
+            }).collect(Collectors.toList());
+
+            estimateItem.setExpenses(expenses);
 
             return estimateItem;
 

@@ -63,7 +63,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Find by bom name"/>
+                        <input type="text" class="form-control" placeholder="Find by bom name" ng-model="searchKey"/>
                         <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
                     </div>
                 </div>
@@ -75,11 +75,11 @@
                     <th></th>
                     <th>BOM</th>
                     <th></th>
-                    <th>Action</th>
+                    <th style="width: 120px">Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr dir-paginate="bom in boms | itemsPerPage: 100" total-boms="{{totalBOMs}}" pagination-id="bom">
+                <tr dir-paginate="bom in boms | itemsPerPage: 200" total-boms="{{totalBOMs}}" pagination-id="bom">
                     <td class="select">
                         <input type="checkbox">
                     </td>
@@ -87,7 +87,20 @@
                         <a href="{{ '/boms/edit/' +  bom.id }}"><h3 ng-bind="bom.name"></h3></a>
                     </td>
                     <td></td>
-                    <td></td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
+                                    aria-expanded="false">
+                                Action &nbsp;
+                                <i class="fa fa-caret-down"></i>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li><a href="javascript:void(0);" ng-click="viewBOM(bom)">View</a></li>
+                                <li><a href="javascript:void(0);" ng-click="deleteBOM(bom)">Delete</a></li>
+                            </ul>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
 

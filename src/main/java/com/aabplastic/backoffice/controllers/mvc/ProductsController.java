@@ -1,7 +1,9 @@
 package com.aabplastic.backoffice.controllers.mvc;
 
 import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
+import com.aabplastic.backoffice.models.BillOfMaterials;
 import com.aabplastic.backoffice.models.Product;
+import com.aabplastic.backoffice.services.BillOfMaterialsService;
 import com.aabplastic.backoffice.services.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class ProductsController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private BillOfMaterialsService billOfMaterialsService;
 
     @RequestMapping("/products")
     public String listProducts(Model model) throws Exception {
@@ -42,11 +47,23 @@ public class ProductsController {
     }
 
     @RequestMapping("/products/new")
-    public String newProduct(Model model) {
+    public String newProduct(Model model) throws Exception {
+
+        Product product = new Product();
+
+        Iterable<BillOfMaterials> boms = billOfMaterialsService.listBOMs();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
+
+        String jsonProducts = objectMapper.writeValueAsString(product);
+        String jsonBOMs = objectMapper.writeValueAsString(boms);
 
         model.addAttribute("headerTitle", "New product");
         model.addAttribute("mode", "new");
-        model.addAttribute("product", "{}");
+        model.addAttribute("product", jsonProducts);
+        model.addAttribute("boms", jsonBOMs);
+
         return "edit-product";
     }
 
@@ -59,14 +76,18 @@ public class ProductsController {
             throw new ResourceNotFoundException("Not found");
         }
 
+        Iterable<BillOfMaterials> boms = billOfMaterialsService.listBOMs();
+
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
 
         String jsonProducts = objectMapper.writeValueAsString(product);
+        String jsonBOMs = objectMapper.writeValueAsString(boms);
 
         model.addAttribute("headerTitle", "Edit product");
         model.addAttribute("mode", "edit");
         model.addAttribute("product", jsonProducts);
+        model.addAttribute("boms", jsonBOMs);
 
         return "edit-product";
     }
