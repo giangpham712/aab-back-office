@@ -53,7 +53,7 @@ public class OrdersController {
     public String listOrders(Model model) throws Exception {
 
         int page = 1;
-        int limit = 20;
+        int limit = 1000;
         String search = "";
 
         Page<Order> orders = orderService.listOrders(search, page, limit, "orderNumber", Sort.Direction.ASC);

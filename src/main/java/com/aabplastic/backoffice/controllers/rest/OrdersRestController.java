@@ -29,7 +29,7 @@ public class OrdersRestController {
         }
 
         if (limit == null) {
-            limit = 20;
+            limit = 1000;
         }
 
         if (search == null) {

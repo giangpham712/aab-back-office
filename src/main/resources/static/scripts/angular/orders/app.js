@@ -11,7 +11,7 @@ angular.module("orders")
             order.customerName = customerMap[order.customerId].displayName;
         });
 
-        $scope.totalOrders = 10;
+        $scope.totalOrders = 1000;
 
         $scope.searchKey = null;
         $scope.page = ViewData.page;
