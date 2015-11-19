@@ -26,4 +26,8 @@ public interface OrderService {
     Order update(long savedOrder, Order putOrder);
 
     void delete(long id);
+
+    void deleteEstimate(long id);
+
+    void deleteEstimate(Estimate savedEstimate);
 }

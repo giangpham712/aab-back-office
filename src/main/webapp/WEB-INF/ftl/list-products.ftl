@@ -88,7 +88,20 @@
                         <a href="{{ '/products/edit/' +  product.id }}"><h3 ng-bind="product.name"></h3></a>
                     </td>
                     <td><span ng-bind=""></span></td>
-                    <td></td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
+                                    aria-expanded="false">
+                                Action &nbsp;
+                                <i class="fa fa-caret-down"></i>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li><a href="javascript:void(0);" ng-click="viewProduct(product)">View</a></li>
+                                <li><a href="javascript:void(0);" ng-click="deleteProduct(product)">Delete</a></li>
+                            </ul>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
 

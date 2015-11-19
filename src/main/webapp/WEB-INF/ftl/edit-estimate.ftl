@@ -44,6 +44,22 @@
                         <a href="/orders/edit/{{estimate.orderId}}">{{estimate.orderNumber}}</a>
 
                     </div>
+                    <div class="col-md-6">
+
+                    </div>
+                    <div class="col-md-4 text-right" ng-show="estimate.id">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default"><i class="fa fa-cog"></i></button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li><a href="javascript:void(0);" ng-click="updateEstimate(estimate)">Update estimate</a></li>
+                                <li><a href="javascript:void(0);" ng-click="resetEstimate(estimate)">Reset estimate</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="list_order_items" class="order-items">

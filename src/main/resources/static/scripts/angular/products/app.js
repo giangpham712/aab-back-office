@@ -13,7 +13,7 @@ angular.module("products")
 
         $scope.loadProducts = function () {
 
-            Products.getList({q: $scope.searchKey, page: $scope.page, limit: 1000})
+            Products.getList({q: $scope.searchKey, page: $scope.page})
                 .then(function (response) {
                     $scope.products = response.plain();
 

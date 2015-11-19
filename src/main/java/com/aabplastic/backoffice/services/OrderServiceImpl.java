@@ -140,6 +140,22 @@ public class OrderServiceImpl implements OrderService {
         Order deletedOrder = orderRepository.save(order);
     }
 
+    @Override
+    public void deleteEstimate(long id) {
+        Estimate estimate = estimateRepository.findOne(id);
+
+        if (estimate == null) {
+            throw new ResourceNotFoundException(MessageFormat.format("Estimate with id {0} cannot be found", id));
+        }
+
+        estimateRepository.delete(estimate);
+    }
+
+    @Override
+    public void deleteEstimate(Estimate estimate) {
+        estimateRepository.delete(estimate);
+    }
+
 
     @Override
     public Iterable<Order> listAllOrders() {

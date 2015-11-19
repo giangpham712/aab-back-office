@@ -82,7 +82,7 @@ angular.module("orders")
             $scope.estimate = window.ViewData.estimate;
 
             var productMap;
-            Products.getList().then(function (response) {
+            Products.getList({limit: 1000}).then(function (response) {
                 $scope.products = response.plain();
                 productMap = _.indexBy($scope.products, "id");
 
@@ -157,7 +157,7 @@ angular.module("orders")
             $scope.order = ViewData.order;
 
             var getSize = function (item) {
-                return (parseFloat(item.thickness) || 0).toFixed(3) + " x " +
+                return (parseFloat(item.thickness) || 0).toFixed(4) + " x " +
                     (parseFloat(item.width) || 0).toFixed(0) + " / " +
                     (parseFloat(item.blowingWidth) || 0).toFixed(0) + " x " +
                     (parseFloat(item.length) || 0).toFixed(0);

@@ -37,6 +37,19 @@ angular.module("estimates")
                 $scope.billsOfMaterials = response.plain();
             });
 
+            var resetEstimate = function (estimate) {
+                Estimates.one(estimate.id).customPOST({}, null, {action: "reset"}).then(function (response) {
+
+                    console.log(response);
+                }, function (error) {
+                    console.log(error);
+                })
+            }
+
+            var updateEstimate = function (estimate) {
+
+            }
+
             var saveEstimate = function () {
 
                 if (ViewData.mode === "new") {
@@ -68,7 +81,9 @@ angular.module("estimates")
 
                 BOMs.one(bomId).get().then(function (response) {
                     var bom = response.plain();
-                    var totalQuantity = _.reduce(bom.items, function (memo, item) { return parseFloat(memo) + parseFloat(item.quantity); }, 0);
+                    var totalQuantity = _.reduce(bom.items, function (memo, item) {
+                        return parseFloat(memo) + parseFloat(item.quantity);
+                    }, 0);
                     $scope.editingItem.materials = bom.items.map(function (item) {
                         var material = {};
                         material.quantity = item.quantity;
@@ -94,6 +109,10 @@ angular.module("estimates")
             }
 
             // Scope functions
+
+            $scope.resetEstimate = resetEstimate;
+            $scope.updateEstimate = updateEstimate;
+
             $scope.saveEstimate = saveEstimate;
 
             $scope.showEditCaculationItem = showEditCaculationItem;
