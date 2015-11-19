@@ -1,7 +1,7 @@
 angular.module("products", ["AAB.rest", "AAB.directives", "AAB.services", "angularUtils.directives.dirPagination"]);
 
 angular.module("products")
-    .controller("ListProductsCtrl", ["$scope", "$location", "Products", function ($scope, $location, Products) {
+    .controller("ListProductsCtrl", ["$scope", "$location", "Products", "NotificationService", function ($scope, $location, Products, NotificationService) {
 
         $scope.products = ViewData.products;
 
@@ -30,6 +30,22 @@ angular.module("products")
 
         $scope.pageChanged = function (page) {
             console.log(page);
+        }
+
+        $scope.viewProduct = function (product) {
+            $window.location.href = "/products/edit/" + product.id;
+        }
+
+        $scope.deleteProduct = function (product) {
+            var confirmDelete = confirm("Are you sure you want to delete this product?");
+            if (!confirmDelete) { return; }
+
+            Products.one(product.id).remove().then(function (response) {
+                NotificationService.notifySuccess("Order deleted successfully");
+                $scope.loadProducts();
+            }, function (error) {
+                NotificationService.notifySuccess("Order cannot be deleted");
+            });
         }
     }]);
 
