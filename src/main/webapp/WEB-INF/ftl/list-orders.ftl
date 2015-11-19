@@ -79,7 +79,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr dir-paginate="order in orders | itemsPerPage: 20" total-items="{{totalOrders}}"
+                <tr dir-paginate="order in orders | itemsPerPage: 1000" total-items="{{totalOrders}}"
                     pagination-id="order">
                     <td>
                         <input type="checkbox">
