@@ -20,6 +20,9 @@ public class Order {
     @Column(name = "order_number", nullable = false)
     private String orderNumber;
 
+    @Column(name = "order_name")
+    private String orderName;
+
     @Column(name = "estimated_time_of_arrival", nullable = true)
     private Date estimatedTimeOfArrival;
 
@@ -89,6 +92,14 @@ public class Order {
 
     public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
+    }
+
+    public String getOrderName() {
+        return orderName;
+    }
+
+    public void setOrderName(String orderName) {
+        this.orderName = orderName;
     }
 
     public Date getEstimatedTimeOfArrival() {

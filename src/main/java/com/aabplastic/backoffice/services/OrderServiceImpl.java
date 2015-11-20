@@ -110,6 +110,7 @@ public class OrderServiceImpl implements OrderService {
 
                 });
 
+        order.setOrderName(putOrder.getOrderName());
         order.setCustomerId(putOrder.getCustomerId());
         order.setOrderDate(putOrder.getOrderDate());
         order.setEstimatedTimeOfArrival(putOrder.getEstimatedTimeOfArrival());
@@ -168,7 +169,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<Order> listOrders(String search, int page, int limit, String sortBy, Sort.Direction sortDirection) {
         PageRequest pageable = new PageRequest(page - 1, limit, new Sort(sortDirection, sortBy));
-        Page<Order> orders = orderRepository.findByOrderNumberLikeAndDeletedFalse(MessageFormat.format("%{0}%", search), pageable);
+        Page<Order> orders = orderRepository.findByOrderNumberLikeOrOrderNameLikeAndDeletedFalse(MessageFormat.format("%{0}%", search), MessageFormat.format("%{0}%", search),pageable);
         return orders;
     }
 

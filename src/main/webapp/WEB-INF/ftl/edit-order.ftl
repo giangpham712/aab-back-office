@@ -43,6 +43,18 @@
                         <p></p>
                     </div>
                     <div class="col-md-3">
+                        <input type="text" class="form-control" placeholder="Order name"
+                               name="orderName"
+                               data-toggle="tooltip" data-original-title="{{order.orderNameError}}"
+                               data-placement="bottom"
+                               ng-class="{'validation-error': order.orderNameError != null && order.orderNameError != ''}"
+                               data-label="Order name"
+                               ng-model="order.orderName"
+                               required>
+
+                        <p></p>
+                    </div>
+                    <div class="col-md-3">
                         <selectize
                                 ng-model="order.customerId"
                                 config="{ valueField: 'id', labelField: 'displayName', searchField: 'displayName', maxItems: 1, placeholder: 'Select a customer' }"

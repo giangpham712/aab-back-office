@@ -8,6 +8,12 @@ angular.module("orders")
         var customerMap = _.indexBy(customers, "id");
 
         $scope.orders.forEach(function (order) {
+            order.displayName = order.orderNumber;
+
+            if (order.orderName) {
+                order.displayName = order.displayName + " (" + order.orderName + ")";
+            }
+
             order.customerName = customerMap[order.customerId].displayName;
         });
 
@@ -24,6 +30,12 @@ angular.module("orders")
                     $scope.orders = response.plain();
 
                     $scope.orders.forEach(function (order) {
+                        order.displayName = order.orderNumber;
+
+                        if (order.orderName) {
+                            order.displayName = order.displayName + " (" + order.orderName + ")";
+                        }
+
                         order.customerName = customerMap[order.customerId].displayName;
                     });
                 }, function (error) {
@@ -212,6 +224,7 @@ angular.module("orders")
 
             function clearValidationErrors() {
                 $scope.order.orderNumberError = "";
+                $scope.order.orderNameError = "";
                 $scope.order.orderDateError = "";
                 $scope.order.estimatedTimeOfArrivalError = "";
                 $scope.order.estimatedTimeOfDepartureError = "";
@@ -360,7 +373,7 @@ angular.module("orders")
     .controller("OrderProductionSheetCtrl", ["$scope", "$http", "Products", function ($scope, $http, Products) {
 
         $scope.order = ViewData.order;
-        $scope.order.orderName = $scope.order.orderNumber;
+        $scope.order.orderName = $scope.order.orderName;
 
         $scope.productionSheetOrder = ViewData.productionSheetOrder;
 

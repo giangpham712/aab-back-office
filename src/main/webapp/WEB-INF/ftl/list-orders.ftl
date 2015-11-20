@@ -58,7 +58,7 @@
                 <div class="col-md-4">
                     <div class="input-group search-box">
                         <input type="text" class="form-control" ng-model="searchKey"
-                               placeholder="Find by order number"/>
+                               placeholder="Find by order number or name"/>
                         <span class="input-group-addon" ng-click="searchOrders()"><span
                                 class="glyphicon glyphicon-search"></span></span>
                     </div>
@@ -68,11 +68,11 @@
                 <thead>
                 <tr>
                     <th></th>
-                    <th>PO Number</th>
+                    <th>PO</th>
                     <th>Customer</th>
                     <th>Order date</th>
-                    <th>Estimated time of departure</th>
-                    <th>Estimated time of arrival</th>
+                    <th title="Estimated time of departure">ETD</th>
+                    <th title="Estimated time of arrival">ETA</th>
                     <th>Total</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -84,7 +84,7 @@
                     <td>
                         <input type="checkbox">
                     </td>
-                    <td><a href="" ng-click="viewOrder(order)"><span ng-bind="order.orderNumber"></span></a></td>
+                    <td><a href="" ng-click="viewOrder(order)"><span ng-bind="order.displayName"></span></a></td>
                     <td><span ng-bind="order.customerName"></span></td>
                     <td><span ng-bind="order.orderDate"></span></td>
                     <td><span ng-bind="order.estimatedTimeOfDeparture"></span></td>
