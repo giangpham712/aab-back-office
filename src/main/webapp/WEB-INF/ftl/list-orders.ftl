@@ -64,7 +64,7 @@
                     </div>
                 </div>
             </div>
-            <table id="orders" class="table table-hover">
+            <table id="orders" class="table table-hover" style="margin-bottom: 120px">
                 <thead>
                 <tr>
                     <th></th>

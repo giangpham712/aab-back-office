@@ -80,13 +80,8 @@ public class EstimateItem {
     @JoinColumn(name = "product_id", nullable = false, insertable = false, updatable = false)
     private Product product;
 
-    @Column(name = "order_item_id", nullable = false)
+    @Column(name = "order_item_id")
     private long orderItemId;
-
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_item_id", nullable = false, insertable = false, updatable = false)
-    private OrderItem orderItem;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -273,14 +268,6 @@ public class EstimateItem {
 
     public void setOrderItemId(long orderItemId) {
         this.orderItemId = orderItemId;
-    }
-
-    public OrderItem getOrderItem() {
-        return orderItem;
-    }
-
-    public void setOrderItem(OrderItem orderItem) {
-        this.orderItem = orderItem;
     }
 
     public Estimate getEstimate() {

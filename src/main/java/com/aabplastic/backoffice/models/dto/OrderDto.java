@@ -1,13 +1,9 @@
 package com.aabplastic.backoffice.models.dto;
 
-import com.aabplastic.backoffice.models.Customer;
-import com.aabplastic.backoffice.models.OrderItem;
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +14,8 @@ public class OrderDto {
 
     @NotBlank(message = "Order number must not be blank")
     private String orderNumber;
+
+    private String orderName;
 
     private Date estimatedTimeOfArrival;
 
@@ -55,6 +53,14 @@ public class OrderDto {
 
     public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
+    }
+
+    public String getOrderName() {
+        return orderName;
+    }
+
+    public void setOrderName(String orderName) {
+        this.orderName = orderName;
     }
 
     public Date getEstimatedTimeOfArrival() {

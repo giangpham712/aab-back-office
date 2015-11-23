@@ -40,7 +40,9 @@ angular.module("estimates")
             var resetEstimate = function (estimate) {
                 Estimates.one(estimate.id).customPOST({}, null, {action: "reset"}).then(function (response) {
 
-                    console.log(response);
+                    var newEstimateId = response.plain().id;
+                    window.location.href = "/estimates/edit/" + newEstimateId;
+
                 }, function (error) {
                     console.log(error);
                 })
