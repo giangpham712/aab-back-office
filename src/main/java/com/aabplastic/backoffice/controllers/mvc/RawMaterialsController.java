@@ -5,6 +5,8 @@ import com.aabplastic.backoffice.models.Material;
 import com.aabplastic.backoffice.services.MaterialService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,11 +23,21 @@ public class RawMaterialsController {
     @RequestMapping("/materials")
     public String listMaterials(Model model) throws Exception {
 
-        Iterable<Material> materials = materialService.listMaterials();
+        int page = 1;
+        int limit = 200;
+        String search = "";
+
+        Page<Material> pageMaterials = materialService.listMaterials(search, page, limit, "name", Sort.Direction.ASC);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
-        String jsonMaterials = objectMapper.writeValueAsString(materials);
+        String jsonMaterials = objectMapper.writeValueAsString(pageMaterials.getContent());
+
+        model.addAttribute("totalPages", pageMaterials.getTotalPages());
+        model.addAttribute("totalProducts", pageMaterials.getTotalElements());
         model.addAttribute("materials", jsonMaterials);
+        model.addAttribute("page", page);
+        model.addAttribute("limit", limit);
+
 
         return "list-materials";
     }

@@ -4,7 +4,9 @@ import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.models.Expense;
 import com.aabplastic.backoffice.services.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,8 +20,25 @@ public class ExpensesRestController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public Iterable<Expense> listExpenses() {
-        Iterable<Expense> result = expenseService.listExpenses();
+    public Iterable<Expense> listExpenses(
+            Model model,
+            @RequestParam(value = "q", required = false) String search,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer limit
+    ) {
+        if (page == null) {
+            page = 1;
+        }
+
+        if (limit == null) {
+            limit = 20;
+        }
+
+        if (search == null) {
+            search = "";
+        }
+
+        Iterable<Expense> result = expenseService.listExpenses(search, page, limit, "name", Sort.Direction.ASC);
         return result;
     }
 
@@ -65,6 +84,19 @@ public class ExpensesRestController {
     public Expense update(@PathVariable long id, @RequestBody @Valid Expense expense) {
         Expense updated = expenseService.update(id, expense);
         return updated;
+    }
+
+    /***
+     * Update a specific expense
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable long id) {
+
+        expenseService.delete(id);
     }
 
 }

@@ -1,12 +1,38 @@
 angular.module("materials", ["AAB.rest", "AAB.directives", "AAB.services", "angularUtils.directives.dirPagination"]);
 
 angular.module("materials")
-    .controller("ListMaterialsCtrl", ["$scope", "$location", "Materials", function ($scope, $location, Materials) {
+    .controller("ListMaterialsCtrl", ["$scope", "$location", "Materials", "NotificationService", function ($scope, $location, Materials, NotificationService) {
 
         $scope.materials = ViewData.materials;
 
         $scope.totalMaterials = ViewData.materials.length;
 
+        $scope.loadMaterials = function () {
+
+            Materials.getList({q: $scope.searchKey, page: $scope.page})
+                .then(function (response) {
+                    $scope.materials = response.plain();
+
+                }, function (error) {
+                    console.log(error);
+                });
+        };
+
+        $scope.viewMaterial = function (material) {
+            $window.location.href = "/materials/edit/" + material.id;
+        }
+
+        $scope.deleteMaterial = function (material) {
+            var confirmDelete = confirm("Are you sure you want to delete this material?");
+            if (!confirmDelete) { return; }
+
+            Materials.one(material.id).remove().then(function (response) {
+                NotificationService.notifySuccess("Material deleted successfully");
+                $scope.loadMaterials();
+            }, function (error) {
+                NotificationService.notifySuccess("Material cannot be deleted");
+            });
+        }
     }]);
 
 

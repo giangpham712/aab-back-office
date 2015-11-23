@@ -5,6 +5,8 @@ import com.aabplastic.backoffice.models.Expense;
 import com.aabplastic.backoffice.services.ExpenseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,11 +23,20 @@ public class ExpensesController {
     @RequestMapping("/expenses")
     public String listExpenses(Model model) throws Exception {
 
-        Iterable<Expense> expenses = expenseService.listExpenses();
+        int page = 1;
+        int limit = 200;
+        String search = "";
+
+        Page<Expense> pagedExpenses = expenseService.listExpenses(search, page, limit, "name", Sort.Direction.ASC);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
-        String jsonExpenses = objectMapper.writeValueAsString(expenses);
+        String jsonExpenses = objectMapper.writeValueAsString(pagedExpenses.getContent());
+
+        model.addAttribute("totalPages", pagedExpenses.getTotalPages());
+        model.addAttribute("totalProducts", pagedExpenses.getTotalElements());
         model.addAttribute("expenses", jsonExpenses);
+        model.addAttribute("page", page);
+        model.addAttribute("limit", limit);
 
         return "list-expenses";
     }

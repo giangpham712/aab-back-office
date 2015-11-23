@@ -1,11 +1,38 @@
 angular.module("expenses", ["AAB.rest", "AAB.directives", "AAB.services", "angularUtils.directives.dirPagination"]);
 
 angular.module("expenses")
-    .controller("ListExpensesCtrl", ["$scope", "$location", "Expenses", function ($scope, $location, Expenses) {
+    .controller("ListExpensesCtrl", ["$scope", "$location", "Expenses", "NotificationService", function ($scope, $location, Expenses, NotificationService) {
 
         $scope.expenses = ViewData.expenses;
 
         $scope.totalExpenses = ViewData.expenses.length;
+
+        $scope.loadExpenses = function () {
+
+            Expenses.getList({q: $scope.searchKey, page: $scope.page})
+                .then(function (response) {
+                    $scope.expenses = response.plain();
+
+                }, function (error) {
+                    console.log(error);
+                });
+        };
+
+        $scope.viewExpense = function (expense) {
+            $window.location.href = "/expenses/edit/" + expense.id;
+        }
+
+        $scope.deleteExpense = function (expense) {
+            var confirmDelete = confirm("Are you sure you want to delete this expense?");
+            if (!confirmDelete) { return; }
+
+            Expenses.one(expense.id).remove().then(function (response) {
+                NotificationService.notifySuccess("Expense deleted successfully");
+                $scope.loadExpenses();
+            }, function (error) {
+                NotificationService.notifySuccess("Expense cannot be deleted");
+            });
+        }
 
     }]);
 

@@ -69,13 +69,13 @@
                 </div>
 
             </div>
-            <table id="materials" class="table table-hover">
+            <table id="materials" class="table table-hover" style="margin-bottom: 120px">
                 <thead>
                 <tr>
                     <th></th>
                     <th>Material</th>
                     <th></th>
-                    <th>Action</th>
+                    <th style="width: 150px">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -87,7 +87,20 @@
                         <a href="{{ '/materials/edit/' +  material.id }}"><h3 ng-bind="material.name"></h3></a>
                     </td>
                     <td><span ng-bind=""></span></td>
-                    <td></td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
+                                    aria-expanded="false">
+                                Action &nbsp;
+                                <i class="fa fa-caret-down"></i>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li><a href="javascript:void(0);" ng-click="viewMaterial(material)">View</a></li>
+                                <li><a href="javascript:void(0);" ng-click="deleteMaterial(material)">Delete</a></li>
+                            </ul>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
 

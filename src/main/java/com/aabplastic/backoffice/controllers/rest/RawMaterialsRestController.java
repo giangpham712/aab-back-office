@@ -4,7 +4,9 @@ import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.models.Material;
 import com.aabplastic.backoffice.services.MaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,8 +20,25 @@ public class RawMaterialsRestController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public Iterable<Material> listMaterials() {
-        Iterable<Material> result = materialService.listMaterials();
+    public Iterable<Material> listMaterials(
+            Model model,
+            @RequestParam(value = "q", required = false) String search,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer limit
+    ) {
+        if (page == null) {
+            page = 1;
+        }
+
+        if (limit == null) {
+            limit = 20;
+        }
+
+        if (search == null) {
+            search = "";
+        }
+
+        Iterable<Material> result = materialService.listMaterials(search, page, limit, "name", Sort.Direction.ASC);
         return result;
     }
 
@@ -67,4 +86,16 @@ public class RawMaterialsRestController {
         return updated;
     }
 
+    /***
+     * Update a specific expense
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable long id) {
+
+        materialService.delete(id);
+    }
 }

@@ -26,11 +26,17 @@ public class Material {
     @Column(name = "active", nullable = false)
     private boolean active;
 
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
+
     @Column(name = "created_at")
     private Date createdAt;
 
     @Column(name = "updated_at")
     private Date updatedAt;
+
+    @Column(name = "deleted_at")
+    private Date deletedAt;
 
     public long getId() {
         return id;
@@ -70,6 +76,22 @@ public class Material {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public Date getCreatedAt() {
