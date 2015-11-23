@@ -96,6 +96,7 @@ angular.module("orders")
             var productMap;
             Products.getList({limit: 1000}).then(function (response) {
                 $scope.products = response.plain();
+
                 productMap = _.indexBy($scope.products, "id");
 
                 angular.forEach(ViewData.order.items, function (item) {
@@ -202,7 +203,7 @@ angular.module("orders")
             $scope.saveOrder = saveOrder;
 
             function addItem() {
-                $scope.order.items.push(angular.copy(orderItem))
+                $scope.order.items.push(angular.copy(orderItem));
             }
 
             function validateOrderItems(order) {
@@ -210,11 +211,23 @@ angular.module("orders")
                     errors: []
                 };
 
+                var checkedProductIds = [];
+
                 _.forEach(order.items, function (item, index) {
 
                     var itemValidation = tv4.validateMultiple(item, ORDER_ITEM_SCHEMA);
-
                     item.errors = itemValidation.errors;
+
+
+                    if (checkedProductIds.indexOf(item.productId) != -1) {
+                        item.errors = item.errors || [];
+
+                        item.errors.push({
+                            message: "You cannot add a product more than once",
+                        });
+                    }
+
+                    checkedProductIds.push(item.productId);
 
                     result.errors = result.errors.concat(item.errors);
                 });
@@ -380,6 +393,7 @@ angular.module("orders")
         var productMap;
         Products.getList().then(function (response) {
             $scope.products = response.plain();
+
             productMap = _.indexBy($scope.products, "id");
 
             angular.forEach(ViewData.order.items, function (item) {

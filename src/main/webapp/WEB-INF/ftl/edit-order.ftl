@@ -49,8 +49,7 @@
                                data-placement="bottom"
                                ng-class="{'validation-error': order.orderNameError != null && order.orderNameError != ''}"
                                data-label="Order name"
-                               ng-model="order.orderName"
-                               required>
+                               ng-model="order.orderName">
 
                         <p></p>
                     </div>
@@ -173,7 +172,7 @@
                                 ng-class="{'invalid': isInvalid(item) }">
                                 <td class="select">
                                     <span class="select">
-                                        <i class="error text-danger fa fa-exclamation-triangle"></i>
+                                        <i ng-popover="" data-toggle="popover" data-placement="right" title="Popover on top" class="error text-danger fa fa-exclamation-triangle"></i>
                                     </span>
                                     <input type="hidden" ng-model="item.productId"/>
                                 </td>

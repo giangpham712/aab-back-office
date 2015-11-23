@@ -184,7 +184,7 @@ angular.module("AAB.directives")
                 modalId: '@',
             },
             controller: function ($scope, $element, $attrs, ModalService) {
-                $element.modal({ show: false });
+                $element.modal({show: false});
                 ModalService.registerModal($scope.modalId, $element);
             }
         }
@@ -208,7 +208,7 @@ angular.module("AAB.directives")
 
                         var model = $parse($attrs.ngModel);
                         var modelSetter = model.assign;
-                        $scope.$apply(function() {
+                        $scope.$apply(function () {
                             modelSetter($scope, true);
                         });
 
@@ -218,13 +218,12 @@ angular.module("AAB.directives")
 
                         var model = $parse($attrs.ngModel);
                         var modelSetter = model.assign;
-                        $scope.$apply(function() {
+                        $scope.$apply(function () {
                             modelSetter($scope, false);
                         });
 
                     });
                 });
-
 
 
             }
@@ -256,6 +255,33 @@ angular.module("AAB.directives")
                 element.on("keyup", function () {
                     ngModel.$setViewValue(element.val());
                 });
+            }
+        }
+    });
+
+angular.module("AAB.directives")
+    .directive('ngPopover', function () {
+
+        var template = '<div class="popover" role="tooltip">' +
+            '<div class="arrow"></div>' +
+            '<h3 class="popover-title"></h3>' +
+            '<div class="popover-content"></div>' +
+            '</div>';
+
+        var options = {
+            trigger: 'hover',
+            container: 'body',
+            template: template
+        };
+
+        return {
+            restrict: 'A',
+            scope: {
+                config: "=?"
+            },
+            link: function (scope, element, attrs, ngModel) {
+
+                element.popover(options);
             }
         }
     });

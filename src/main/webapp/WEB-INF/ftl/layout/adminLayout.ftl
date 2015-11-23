@@ -70,7 +70,7 @@ ${top_scripts}
 
 
 <script type="text/javascript" src="/bower_components/selectize/dist/js/standalone/selectize.min.js"></script>
-<script type="text/javascript" src="/bower_components/angular-selectize2/dist/selectize.js"></script>
+<script type="text/javascript" src="/bower_components/angular-selectize2/dist/angular-selectize.js"></script>
 <script type="text/javascript" src="/bower_components/autoNumeric/autoNumeric.js"></script>
 <script type="text/javascript" src="/bower_components/alertifyjs/dist/js/alertify.js"></script>
 

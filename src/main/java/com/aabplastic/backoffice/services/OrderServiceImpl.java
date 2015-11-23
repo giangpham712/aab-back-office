@@ -110,6 +110,7 @@ public class OrderServiceImpl implements OrderService {
 
                 });
 
+        order.setOrderNumber(putOrder.getOrderNumber());
         order.setOrderName(putOrder.getOrderName());
         order.setCustomerId(putOrder.getCustomerId());
         order.setOrderDate(putOrder.getOrderDate());

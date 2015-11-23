@@ -400,6 +400,11 @@ span.required {
     height: 34px;
 }
 
+.selectize-control .disabled-option {
+    pointer-events: none;
+    color: #aaa;
+}
+
 /* Typeahead */
 
 .twitter-typeahead {
