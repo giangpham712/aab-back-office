@@ -139,7 +139,7 @@
                     </button>
                 </div>
                 <div id="list_order_items" class="order-items" style="">
-                    <div editable-grid style="padding-bottom: 150px">
+                    <div editable-grid style="padding-bottom: 150px; z-index:200">
                         <table id="table_order_items" class="table table-hover">
                             <thead>
                             <tr>
