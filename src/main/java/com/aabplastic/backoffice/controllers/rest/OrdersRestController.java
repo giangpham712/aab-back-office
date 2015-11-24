@@ -102,7 +102,13 @@ public class OrdersRestController {
 
                     long productId = estimateItem.getProductId();
                     if (map.containsKey(productId)) {
-                        estimateItem.setExpenses(map.get(productId).getExpenses());
+                        List<EstimateItemExpense> itemExpenses = map.get(productId).getExpenses();
+
+                        itemExpenses.stream().forEach(itemExpense -> {
+                            itemExpense.setEstimateItem(estimateItem);
+                        });
+
+                        estimateItem.setExpenses(itemExpenses);
                     }
                 });
 

@@ -33,7 +33,13 @@ public class ProductionSheetExcelExporter {
         List<ProductionSheetOrderItem> productionSheetOrderItems = productionSheetOrder.getProductionSheetOrderItems();
 
 
+
         try (InputStream is = classLoader.getResourceAsStream("excels/production-order.xlsx")) {
+
+            File file = new File("temp");
+            if (!file.exists()) {
+                file.mkdir();
+            }
 
             File outputFile = new File("temp", outputFilename);
             try (OutputStream os = new FileOutputStream(outputFile)) {
