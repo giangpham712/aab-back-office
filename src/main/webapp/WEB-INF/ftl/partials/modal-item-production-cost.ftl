@@ -98,7 +98,7 @@
                                             <input type="text" class="form-control" ng-model="item.total" ng-auto-numeric="currency" config="{mDec:2}"/>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-link">Remove</button>
+                                            <button type="button" ng-click="removeItem(item)" class="btn btn-link">Remove</button>
                                         </td>
                                     </tr>
                                     <tr ng-show="!editingItem.expenses || editingItem.expenses.length == 0">

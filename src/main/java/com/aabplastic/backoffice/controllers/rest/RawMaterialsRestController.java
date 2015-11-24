@@ -4,6 +4,7 @@ import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.models.Material;
 import com.aabplastic.backoffice.services.MaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -38,8 +39,8 @@ public class RawMaterialsRestController {
             search = "";
         }
 
-        Iterable<Material> result = materialService.listMaterials(search, page, limit, "name", Sort.Direction.ASC);
-        return result;
+        Page<Material> result = materialService.listMaterials(search, page, limit, "name", Sort.Direction.ASC);
+        return result.getContent();
     }
 
     /***
