@@ -1,7 +1,7 @@
 <section class="sidebar">
     <div class="user-panel">
         <div class="pull-left image">
-            <img src="/images/user2-160x160.jpg" class="img-circle" alt="User Image" />
+            <img src="/orders" class="img-circle" alt="User Image" />
         </div>
         <div class="pull-left info">
             <p>Ernest Ong</p>
@@ -12,7 +12,7 @@
     <ul class="sidebar-menu">
         <li class="header">MAIN NAVIGATION</li>
         <li class="active treeview">
-            <a href="#">
+            <a href="/orders">
                 <i class="glyphicons dashboard"></i> <span>Home</span> </i>
             </a>
         </li>
