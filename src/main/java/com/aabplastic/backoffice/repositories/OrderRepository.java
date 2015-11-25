@@ -13,8 +13,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Page<Order> findByOrderNumberLikeAndDeletedFalse(String search, Pageable pageable);
 
-    @Query("SELECT o FROM Order o WHERE (o.orderNumber LIKE ?1 OR o.orderName LIKE ?2) AND o.deleted = FALSE ORDER BY o.createdAt DESC")
-    Page<Order> findByOrderNumberLikeOrOrderNameLikeAndDeletedFalseOrderByCreatedAtDesc(String searchOrderNumber, String searchOrderName, Pageable pageable);
+    @Query("SELECT o FROM Order o WHERE (o.orderNumber LIKE ?1 OR o.orderName LIKE ?2) AND o.deleted = FALSE ORDER BY o.orderNumber DESC")
+    Page<Order> findByOrderNumberLikeOrOrderNameLikeAndDeletedFalse(String searchOrderNumber, String searchOrderName, Pageable pageable);
 
     List<Order> findAllByDeletedFalse();
 }
