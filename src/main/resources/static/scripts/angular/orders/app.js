@@ -17,7 +17,7 @@ angular.module("orders")
             order.customerName = customerMap[order.customerId].displayName;
         });
 
-        $scope.totalOrders = 1000;
+        $scope.totalOrders = ViewData.totalOrders;
 
         $scope.searchKey = null;
         $scope.page = ViewData.page;
@@ -25,7 +25,7 @@ angular.module("orders")
 
         $scope.loadOrders = function () {
 
-            Orders.getList({q: $scope.searchKey, page: $scope.page})
+            Orders.getList({q: $scope.searchKey, page: $scope.page, limit: $scope.limit})
                 .then(function (response) {
                     $scope.orders = response.plain();
 
@@ -45,6 +45,12 @@ angular.module("orders")
 
         $scope.searchOrders = function () {
             $scope.page = 1;
+
+            $scope.loadOrders();
+        }
+
+        $scope.pageChanged = function (page) {
+            $scope.page = page;
 
             $scope.loadOrders();
         }

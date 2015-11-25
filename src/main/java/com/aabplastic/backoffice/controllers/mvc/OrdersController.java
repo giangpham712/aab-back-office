@@ -53,7 +53,7 @@ public class OrdersController {
     public String listOrders(Model model) throws Exception {
 
         int page = 1;
-        int limit = 1000;
+        int limit = 20;
         String search = "";
 
         Page<Order> orders = orderService.listOrders(search, page, limit, "orderNumber", Sort.Direction.ASC);
@@ -67,6 +67,7 @@ public class OrdersController {
         String jsonCustomers = objectMapper.writeValueAsString(customers);
 
         model.addAttribute("totalPages", orders.getTotalPages());
+        model.addAttribute("totalOrders", orders.getTotalElements());
         model.addAttribute("customers", jsonCustomers);
         model.addAttribute("orders", jsonOrders);
         model.addAttribute("page", page);

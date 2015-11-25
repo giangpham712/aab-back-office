@@ -170,7 +170,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<Order> listOrders(String search, int page, int limit, String sortBy, Sort.Direction sortDirection) {
         PageRequest pageable = new PageRequest(page - 1, limit, new Sort(sortDirection, sortBy));
-        Page<Order> orders = orderRepository.findByOrderNumberLikeOrOrderNameLikeAndDeletedFalse(MessageFormat.format("%{0}%", search), MessageFormat.format("%{0}%", search),pageable);
+        Page<Order> orders = orderRepository.findByOrderNumberLikeOrOrderNameLikeAndDeletedFalseOrderByCreatedAtDesc(MessageFormat.format("%{0}%", search), MessageFormat.format("%{0}%", search),pageable);
         return orders;
     }
 

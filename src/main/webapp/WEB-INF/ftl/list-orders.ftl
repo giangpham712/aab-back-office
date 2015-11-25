@@ -3,7 +3,7 @@
 <#assign top_scripts>
 <script>
     //<![CDATA[
-    window.ViewData = {orders: ${orders}, customers: ${customers}};
+    window.ViewData = {orders: ${orders}, totalOrders: ${totalOrders}, page: ${page}, limit: ${limit}, customers: ${customers}};
     //]]>
 </script>
 </#assign>
@@ -79,7 +79,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr dir-paginate="order in orders | itemsPerPage: 1000" total-items="{{totalOrders}}"
+                <tr dir-paginate="order in orders | itemsPerPage: limit" total-items="{{totalOrders}}"
                     pagination-id="order">
                     <td>
                         <input type="checkbox">
@@ -111,6 +111,7 @@
                 </tbody>
 
             </table>
+            <dir-pagination-controls class="pull-right" pagination-id="order" on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
         </div>
 
     </div>
