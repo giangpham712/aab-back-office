@@ -139,7 +139,7 @@
                     </button>
                 </div>
                 <div id="list_order_items" class="order-items" style="">
-                    <div editable-grid style="padding-bottom: 150px; z-index:200">
+                    <div editable-grid style="padding-bottom: 150px; z-index: 100;">
                         <table id="table_order_items" class="table table-hover">
                             <thead>
                             <tr>
@@ -361,11 +361,13 @@
                                 </td>
                             </tr>
                         </table>
-                    </div>
-                    <div class="clearfix margin-bottom-20" style="padding-bottom: 150px;">
+
                         <div class="pull-left">
                             <button type="button" class="btn btn-sm btn-default" ng-click="addItem()">Add line</button>
                         </div>
+                    </div>
+                    <div class="clearfix margin-bottom-20" style="padding-bottom: 150px; ">
+
 
                         <div class="pull-right">
                             <div class="order-total">
