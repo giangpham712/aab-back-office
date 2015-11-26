@@ -102,6 +102,10 @@ angular.module("estimates")
                 $scope.editingItem.expenses.push({});
             }
 
+            var removeExpenseItem = function (expense, index) {
+                $scope.editingItem.expenses.splice(index, 1);
+            }
+
             var saveCalculation = function () {
                 var item = $scope.estimate.items[$scope.editingItem.itemIndex];
                 item.materials = $scope.editingItem.materials;
@@ -122,6 +126,8 @@ angular.module("estimates")
             $scope.applyBOM = applyBOM;
 
             $scope.addNewExpenseItem = addNewExpenseItem;
+
+            $scope.removeExpenseItem = removeExpenseItem;
 
             $scope.saveCalculation = saveCalculation;
         }]);

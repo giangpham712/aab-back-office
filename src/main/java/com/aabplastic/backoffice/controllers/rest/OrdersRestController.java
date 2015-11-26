@@ -81,19 +81,21 @@ public class OrdersRestController {
 
         Estimate savedEstimate = orderService.getEstimateByOrderId(order.getId());
 
-        if (savedEstimate == null) { return null; }
+        if (savedEstimate == null) {
+            return null;
+        }
 
         Estimate updatedEstimate = createEstimateForOrder(order);
 
         List<EstimateItem> savedEstimateItems = savedEstimate.getItems();
         Map<Long, EstimateItem> map = savedEstimateItems.stream().collect(Collectors.toMap(EstimateItem::getProductId, Function.identity()));
 
-                savedEstimate.getItems().stream()
-                        .sorted((i1, i2) -> (int) (i1.getId() - i2.getId()))
-                        .forEach(estimateItem -> {
-                            savedEstimate.getItems().remove(estimateItem);
+        savedEstimate.getItems().stream()
+                .sorted((i1, i2) -> (int) (i1.getId() - i2.getId()))
+                .forEach(estimateItem -> {
+                    savedEstimate.getItems().remove(estimateItem);
 
-                        });
+                });
 
         updatedEstimate.getItems().stream()
                 .forEach(estimateItem -> {
@@ -109,10 +111,15 @@ public class OrdersRestController {
                         });
 
                         estimateItem.setExpenses(itemExpenses);
+                    } else {
+                        List<EstimateItemExpense> itemExpenses = estimateItem.getExpenses();
+                        itemExpenses.stream().forEach(itemExpense -> {
+                            itemExpense.setEstimateItem(estimateItem);
+                        });
                     }
                 });
 
-        orderService.updateEstimate(savedEstimate.getId(), savedEstimate);
+        orderService.updateEstimate(savedEstimate);
 
         return savedEstimate;
     }

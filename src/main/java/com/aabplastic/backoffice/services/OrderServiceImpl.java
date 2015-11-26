@@ -218,50 +218,86 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Estimate updateEstimate(Estimate estimate) {
+        Estimate updatedEstimate = estimateRepository.save(estimate);
+        return updatedEstimate;
+    }
+
+    @Override
     public Estimate updateEstimate(long id, Estimate putEstimate) {
 
         List<EstimateItem> putEstimateItems = putEstimate.getItems();
         Map<Long, EstimateItem> map1 = putEstimateItems.stream().filter(x -> x.getId() != 0).collect(Collectors.toMap(EstimateItem::getId, Function.identity()));
 
-        Estimate estimate = estimateRepository.findOne(id);
-        List<EstimateItem> estimateItems = estimate.getItems();
+        Estimate savedEstimate = estimateRepository.findOne(id);
+        List<EstimateItem> estimateItems = savedEstimate.getItems();
 
-        estimateItems.stream().forEach(estimateItem -> {
+        Map<Long, EstimateItem> map2 = estimateItems.stream().collect(Collectors.toMap(EstimateItem::getId, Function.identity()));
 
-            EstimateItem putEstimateItem = map1.get(estimateItem.getId());
+        Set<Long> ids = new HashSet<Long>();
 
-            updateItemMaterials(putEstimateItem, estimateItem);
-            updateItemExpenses(putEstimateItem, estimateItem);
+        // Remove items
+        estimateItems.stream()
+                .filter(x -> !map1.containsKey(x.getId()))
+                .sorted((o1, o2) -> (int) (o1.getId() - o2.getId()))
+                .forEach(y -> {
+                    savedEstimate.getItems().remove(y);
 
-            estimateItem.setActualPricePerWeightUnit(putEstimateItem.getActualPricePerWeightUnit());
-            estimateItem.setActualThickness(putEstimateItem.getActualThickness());
-            estimateItem.setActualTotalWeight(putEstimateItem.getActualTotalWeight());
-            estimateItem.setActualUnitWeight(putEstimateItem.getActualUnitWeight());
-            estimateItem.setBlowingWidth(putEstimateItem.getBlowingWidth());
+                    ids.add(y.getId());
+                });
 
-            estimateItem.setGusset(putEstimateItem.getGusset());
-            estimateItem.setHandleRatio(putEstimateItem.getHandleRatio());
-            estimateItem.setLength(putEstimateItem.getLength());
-            estimateItem.setPricePerWeightUnit(putEstimateItem.getPricePerWeightUnit());
-            estimateItem.setQuantity(putEstimateItem.getQuantity());
-            estimateItem.setThickness(putEstimateItem.getThickness());
-            estimateItem.setTotal(putEstimateItem.getTotal());
-            estimateItem.setTotalCost(putEstimateItem.getTotalCost());
-            estimateItem.setTotalWeight(putEstimateItem.getTotalWeight());
-            estimateItem.setUnitWeight(putEstimateItem.getUnitWeight());
-            estimateItem.setWidth(putEstimateItem.getWidth());
+        // Add new items
+        putEstimateItems.stream().filter(x -> !map2.containsKey(x.getId())).forEach(y -> {
+            savedEstimate.getItems().add(y);
+            y.setEstimate(savedEstimate);
+
+            ids.add(y.getId());
         });
 
-        Date now = new Date();
-        estimate.setUpdatedAt(now);
+        // Update items
+        estimateItems.stream()
+                .filter(x -> !ids.contains(x.getId()))
+                .forEach(estimateItem -> {
 
-        Estimate updatedEstimate = estimateRepository.save(estimate);
+                    EstimateItem putEstimateItem = map1.get(estimateItem.getId());
+
+                    updateItemMaterials(putEstimateItem, estimateItem);
+                    updateItemExpenses(putEstimateItem, estimateItem);
+
+                    estimateItem.setActualPricePerWeightUnit(putEstimateItem.getActualPricePerWeightUnit());
+                    estimateItem.setActualThickness(putEstimateItem.getActualThickness());
+                    estimateItem.setActualTotalWeight(putEstimateItem.getActualTotalWeight());
+                    estimateItem.setActualUnitWeight(putEstimateItem.getActualUnitWeight());
+                    estimateItem.setBlowingWidth(putEstimateItem.getBlowingWidth());
+
+                    estimateItem.setGusset(putEstimateItem.getGusset());
+                    estimateItem.setHandleRatio(putEstimateItem.getHandleRatio());
+                    estimateItem.setLength(putEstimateItem.getLength());
+                    estimateItem.setPricePerWeightUnit(putEstimateItem.getPricePerWeightUnit());
+                    estimateItem.setQuantity(putEstimateItem.getQuantity());
+                    estimateItem.setThickness(putEstimateItem.getThickness());
+                    estimateItem.setTotal(putEstimateItem.getTotal());
+                    estimateItem.setTotalCost(putEstimateItem.getTotalCost());
+                    estimateItem.setTotalWeight(putEstimateItem.getTotalWeight());
+                    estimateItem.setUnitWeight(putEstimateItem.getUnitWeight());
+                    estimateItem.setWidth(putEstimateItem.getWidth());
+                });
+
+        Date now = new Date();
+        savedEstimate.setUpdatedAt(now);
+
+        Estimate updatedEstimate = estimateRepository.save(savedEstimate);
 
         return updatedEstimate;
     }
 
     private void updateItemMaterials(EstimateItem putEstimateItem, EstimateItem estimateItem) {
         List<EstimateItemMaterial> putMaterials = putEstimateItem.getMaterials();
+
+        if (putMaterials == null) {
+            putMaterials = new ArrayList<EstimateItemMaterial>();
+        }
+
         Map<Long, EstimateItemMaterial> map11 = putMaterials.stream().filter(x -> x.getId() != 0).collect(Collectors.toMap(EstimateItemMaterial::getId, Function.identity()));
 
         List<EstimateItemMaterial> savedMaterials = estimateItem.getMaterials();
@@ -303,19 +339,22 @@ public class OrderServiceImpl implements OrderService {
 
     private void updateItemExpenses(EstimateItem putEstimateItem, EstimateItem estimateItem) {
         List<EstimateItemExpense> putExpenses = putEstimateItem.getExpenses();
+        if (putExpenses == null) {
+            putExpenses = new ArrayList<EstimateItemExpense>();
+        }
         Map<Long, EstimateItemExpense> map11 = putExpenses.stream().filter(x -> x.getId() != 0).collect(Collectors.toMap(EstimateItemExpense::getId, Function.identity()));
 
-        List<EstimateItemExpense> savedMaterials = estimateItem.getExpenses();
-        Map<Long, EstimateItemExpense> map22 = savedMaterials.stream().collect(Collectors.toMap(EstimateItemExpense::getId, Function.identity()));
+        List<EstimateItemExpense> savedExpenses = estimateItem.getExpenses();
+        Map<Long, EstimateItemExpense> map22 = savedExpenses.stream().collect(Collectors.toMap(EstimateItemExpense::getId, Function.identity()));
 
         Set<Long> ids = new HashSet<>();
 
         // Remove items
-        savedMaterials.stream()
+        savedExpenses.stream()
                 .filter(x -> !map11.containsKey(x.getId()))
                 .sorted((o1, o2) -> (int) (o1.getId() - o2.getId()))
                 .forEach(x -> {
-                    estimateItem.getMaterials().remove(x);
+                    estimateItem.getExpenses().remove(x);
 
                     ids.add(x.getId());
                 });
@@ -329,13 +368,13 @@ public class OrderServiceImpl implements OrderService {
         });
 
         // Update items
-        savedMaterials.stream()
+        savedExpenses.stream()
                 .filter(x -> !ids.contains(x.getId()))
                 .forEach(x -> {
-                    EstimateItemExpense estimateItemMaterial = map11.get(x.getId());
+                    EstimateItemExpense estimateItemExpense = map11.get(x.getId());
 
-                    x.setTotal(estimateItemMaterial.getTotal());
-                    x.setExpenseId(estimateItemMaterial.getExpenseId());
+                    x.setTotal(estimateItemExpense.getTotal());
+                    x.setExpenseId(estimateItemExpense.getExpenseId());
 
                 });
     }

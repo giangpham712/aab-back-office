@@ -17,6 +17,8 @@ public interface OrderService {
 
     Estimate createEstimate(Estimate estimate);
 
+    Estimate updateEstimate(Estimate estimate);
+
     Estimate updateEstimate(long id, Estimate estimate);
 
     Estimate getEstimateById(long id);
