@@ -65,7 +65,7 @@
                 <div id="list_order_items" class="order-items">
                     <label>Quote</label>
 
-                    <div style="padding-bottom: 150px">
+                    <div style="margin-bottom: 150px">
                         <table class="table table-hover">
                             <thead>
                             <tr>
@@ -130,7 +130,7 @@
                 <div id="list_order_items" class="order-items" style="">
                     <label>Actual</label>
 
-                    <div style="padding-bottom: 150px">
+                    <div style="margin-bottom: 150px">
                         <table class="table table-hover" style="width: auto">
                             <thead>
                             <tr>

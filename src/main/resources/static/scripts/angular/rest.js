@@ -73,3 +73,12 @@ angular.module("AAB.rest")
 
         return Customers;
     }]);
+
+angular.module("AAB.rest")
+    .service("Machines", ["Restangular", function (Restangular) {
+        var Machines = Restangular.service("machines");
+        Restangular.extendModel("machines", function (model) {
+            return model;
+        });
+        return Machines;
+    }]);
