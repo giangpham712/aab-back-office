@@ -1,5 +1,6 @@
 package com.aabplastic.backoffice.services;
 
+import com.aabplastic.backoffice.enums.MachineStatus;
 import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.models.Machine;
 import com.aabplastic.backoffice.repositories.MachineRepository;
@@ -27,8 +28,10 @@ public class MachineServiceImpl implements MachineService {
     public Machine create(Machine machine) {
         Date now = new Date();
 
+        machine.setStatus(MachineStatus.IDLE);
         machine.setCreatedAt(now);
         machine.setUpdatedAt(now);
+
 
         Machine created = machineRepository.save(machine);
         return created;

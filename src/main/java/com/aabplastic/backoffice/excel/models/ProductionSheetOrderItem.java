@@ -1,5 +1,6 @@
 package com.aabplastic.backoffice.excel.models;
 
+import com.aabplastic.backoffice.models.Order;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ProductionSheetOrderItem {
@@ -26,6 +27,10 @@ public class ProductionSheetOrderItem {
 
     private String emboss;
     private String totalWeight;
+
+    private int[] rollNumbers;
+
+    private Order order;
 
     public void setProductionSheetOrder(ProductionSheetOrder productionSheetOrder) {
         this.productionSheetOrder = productionSheetOrder;
@@ -107,7 +112,6 @@ public class ProductionSheetOrderItem {
         this.totalBlowingWeight = totalBlowingWeight;
     }
 
-
     public void setLengthPerRoll(String lengthPerRoll) {
         this.lengthPerRoll = lengthPerRoll;
     }
@@ -146,6 +150,22 @@ public class ProductionSheetOrderItem {
 
     public void setTotalWeight(String totalWeight) {
         this.totalWeight = totalWeight;
+    }
+
+    public int[] getRollNumbers() {
+        return rollNumbers;
+    }
+
+    public void setRollNumbers(int[] rollNumbers) {
+        this.rollNumbers = rollNumbers;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }
 

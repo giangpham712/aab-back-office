@@ -117,7 +117,7 @@ public class OrdersRestController {
 
                         estimateItem.setExpenses(itemExpenses);
                         estimateItem.setMaterials(itemMaterials);
-                        
+
                     } else {
                         List<EstimateItemExpense> itemExpenses = estimateItem.getExpenses();
                         itemExpenses.stream().forEach(itemExpense -> {

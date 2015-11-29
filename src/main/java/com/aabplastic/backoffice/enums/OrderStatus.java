@@ -1,5 +1,5 @@
 package com.aabplastic.backoffice.enums;
 
-public enum MachineStatus {
-    IDLE
+public enum OrderStatus {
+    NEW
 }

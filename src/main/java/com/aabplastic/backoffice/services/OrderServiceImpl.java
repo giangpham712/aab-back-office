@@ -186,6 +186,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order findOrderById(long id) {
+        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+
+        Order order = orderRepository.findOne(id);
+
+        return order;
+    }
+
+    @Override
     public Estimate createEstimate(Estimate putEstimate) {
 
         Date now = new Date();

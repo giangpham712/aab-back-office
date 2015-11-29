@@ -2,9 +2,9 @@ package com.aabplastic.backoffice.excel;
 
 import com.aabplastic.backoffice.excel.models.ProductionSheetOrder;
 import com.aabplastic.backoffice.excel.models.ProductionSheetOrderItem;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.jxls.area.XlsArea;
 import org.jxls.command.EachCommand;
@@ -17,7 +17,9 @@ import org.jxls.util.TransformerFactory;
 
 import java.io.*;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ProductionSheetExcelExporter {
@@ -32,7 +34,40 @@ public class ProductionSheetExcelExporter {
 
         List<ProductionSheetOrderItem> productionSheetOrderItems = productionSheetOrder.getProductionSheetOrderItems();
 
+        int[] rollNumbers = new int[100];
+        for (int i = 0; i < rollNumbers.length; i++) {
+            rollNumbers[i] = i + 1;
+        }
 
+
+
+        final int[] index = {0};
+
+        List<ProductionSheetOrderItem> oldList = productionSheetOrderItems.stream().filter(x -> x != null).collect(Collectors.toList());
+
+        oldList.forEach(item -> {
+
+            item.setRollNumbers(rollNumbers);
+
+            int totalSheets = (Integer.parseInt(item.getTotalRolls()) - 1) / 100 + 1;
+
+            if (totalSheets > 1) {
+
+                for (int i = 1; i < totalSheets; i++) {
+
+                    ProductionSheetOrderItem copy = copy(item);
+
+                    productionSheetOrderItems.add(index[0] + i, copy);
+                    copy.setRollNumbers(ArrayUtils.clone(item.getRollNumbers()));
+
+                    for (int j = 0; j < copy.getRollNumbers().length; j++) {
+                        copy.getRollNumbers()[j] = copy.getRollNumbers()[j] + 100 * 1;
+                    }
+                }
+            }
+
+            index[0]++;
+        });
 
         try (InputStream is = classLoader.getResourceAsStream("excels/production-order.xlsx")) {
 
@@ -49,7 +84,23 @@ public class ProductionSheetExcelExporter {
                 XlsArea xlsArea = new XlsArea("Template!A1:N52", transformer);
                 XlsArea orderArea = new XlsArea("Template!A1:N52", transformer);
 
-                List<String> sheetLabels = productionSheetOrderItems.stream().map(x -> x.getProductName()).collect(Collectors.toList());
+                Map<String, Integer> itemMap = new HashMap<>();
+
+                List<String> sheetLabels = productionSheetOrderItems.stream().map(x -> {
+
+                    String label = x.getProductName();
+                    if (itemMap.containsKey(label)) {
+
+                        int count = itemMap.get(label);
+                        itemMap.put(label, count + 1);
+                        label = MessageFormat.format("{0} ({1})", label, count + 1);
+                    } else {
+                        itemMap.put(label, 1);
+                    }
+
+                    return label;
+
+                }).collect(Collectors.toList());
 
                 EachCommand orderEachCommand = new EachCommand("orderItem", "orderItems", orderArea, new ProductionSheetCellRefGenerator(sheetLabels.toArray(new String[sheetLabels.size()])));
 
@@ -72,11 +123,8 @@ public class ProductionSheetExcelExporter {
                 double topMargin = templateSheet.getMargin(Sheet.TopMargin);
                 double bottomMargin = templateSheet.getMargin(Sheet.BottomMargin);
 
-                XSSFPrintSetup setup = (XSSFPrintSetup) templateSheet.getPrintSetup();
-
-
                 int numberOfSheets = workbook.getNumberOfSheets();
-                for (int i = 1; i< numberOfSheets; i++) {
+                for (int i = 1; i < numberOfSheets; i++) {
                     XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(i);
                     sheet.setMargin(Sheet.LeftMargin, leftMargin);
                     sheet.setMargin(Sheet.RightMargin, rightMargin);
@@ -101,4 +149,51 @@ public class ProductionSheetExcelExporter {
         return outputFilename;
     }
 
+    private ProductionSheetOrderItem copy(ProductionSheetOrderItem productionSheetOrderItem) {
+        ProductionSheetOrderItem copy = new ProductionSheetOrderItem();
+
+        copy.setProductionSheetOrder(productionSheetOrderItem.getProductionSheetOrder());
+        copy.setProductId(productionSheetOrderItem.getProductId());
+        copy.setProductName(productionSheetOrderItem.getProductName());
+
+        copy.setThickness(productionSheetOrderItem.getThickness());
+        copy.setWidth(productionSheetOrderItem.getWidth());
+        copy.setBlowingWidth(productionSheetOrderItem.getBlowingWidth());
+        copy.setLength(productionSheetOrderItem.getLength());
+        copy.setEmboss(productionSheetOrderItem.getEmboss());
+
+        copy.setGusset(productionSheetOrderItem.getGusset());
+
+        copy.setWeightPerLengthUnit(productionSheetOrderItem.getWeightPerLengthUnit());
+        copy.setLengthPerRoll(productionSheetOrderItem.getLengthPerRoll());
+        copy.setWeightPerRoll(productionSheetOrderItem.getWeightPerRoll());
+        copy.setTotalWeight(productionSheetOrderItem.getTotalWeight());
+        copy.setTotalBlowingWeight(productionSheetOrderItem.getTotalBlowingWeight());
+        copy.setTotalRolls(productionSheetOrderItem.getTotalRolls());
+
+        return copy;
+    }
+
+
+    private double calculateActualThickness(double thickness) {
+        double tolerance;
+        if (thickness < 0.013) {
+            tolerance = 0;
+        } else if (thickness < 0.014) {
+            tolerance = 2;
+        } else {
+            tolerance = 5;
+        }
+
+        return (100 - tolerance) * thickness / 100;
+    }
+
+    private int getLengthPerRoll(double weightPerLengthUnit) {
+        int lengthPerRoll = 4000;
+        while (lengthPerRoll * weightPerLengthUnit / 1000 > 90) {
+            lengthPerRoll = lengthPerRoll - 500;
+        }
+
+        return lengthPerRoll;
+    }
 }

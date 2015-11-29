@@ -13,6 +13,7 @@ import com.aabplastic.backoffice.services.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Iterators;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -139,7 +140,10 @@ public class OrdersController {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
 
-        OrderDto order = orderService.getOrderById(id);
+        Order order = orderService.findOrderById(id);
+        if (StringUtils.isEmpty(order.getOrderName())) {
+            order.setOrderName(order.getOrderNumber());
+        }
 
         if (order == null) {
             throw new ResourceNotFoundException("Not found");
@@ -164,7 +168,7 @@ public class OrdersController {
     @RequestMapping(value = "/orders/productionsheet/{id}", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded" )
     public void generateProductionSheet(@PathVariable long id, @RequestParam String orderName, HttpServletResponse response) throws IOException {
 
-        OrderDto order = orderService.getOrderById(id);
+        Order order = orderService.findOrderById(id);
         if (order == null) {
             throw new ResourceNotFoundException("Not found");
         }
@@ -196,7 +200,7 @@ public class OrdersController {
         is.close();
     }
 
-    private ProductionSheetOrder buildProductionSheetOrder(OrderDto order, String orderName, Map<Long, Product> productMap) {
+    private ProductionSheetOrder buildProductionSheetOrder(Order order, String orderName, Map<Long, Product> productMap) {
 
         ProductionSheetOrder productionSheetOrder = new ProductionSheetOrder();
         productionSheetOrder.setCustomer(order.getCustomer().getDisplayName());

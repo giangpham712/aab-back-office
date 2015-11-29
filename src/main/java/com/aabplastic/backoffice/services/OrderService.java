@@ -15,6 +15,8 @@ public interface OrderService {
 
     OrderDto getOrderById(long id);
 
+    Order findOrderById(long id);
+
     Estimate createEstimate(Estimate estimate);
 
     Estimate updateEstimate(Estimate estimate);
