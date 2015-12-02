@@ -78,6 +78,10 @@
                            data-toggle="tab">Bills
                             of materials</a>
                     </li>
+                    <li role="presentation">
+                        <a href data-target="#production" aria-controls="bill_of_materials" role="tab"
+                           data-toggle="tab">Production</a>
+                    </li>
                 </ul>
                 <div class="tab-content" ng-cloak>
                     <div class="tab-pane clearfix active" id="product_information">
@@ -215,6 +219,14 @@
                                                options="boms"></selectize>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane clearfix" id="production">
+                        <div class="col-md-3" style="margin-bottom: 10px">
+                            <label class="small">Paint per KG</label>
+                            <input type="text" class="form-control" placeholder="Paint per KG"
+                                   ng-model="product.painPerUnitWeight">
                         </div>
                     </div>
                 </div>

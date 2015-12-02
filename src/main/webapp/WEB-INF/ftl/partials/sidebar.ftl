@@ -64,10 +64,19 @@
         </li>
         <li class="treeview">
             <a href="#">
-                <i class="glyphicons money"></i> <span>Production</span> <i class="fa fa-angle-left pull-right"> </i>
+                <i class="glyphicons cogwheel"></i> <span>Machines</span> <i class="fa fa-angle-left pull-right"> </i>
             </a>
             <ul class="treeview-menu">
-                <li class=""><a href="/machines"><i class="fa fa-circle-o"></i>Machines</a></li>
+                <li class=""><a href="/machines"><i class="fa fa-circle-o"></i>List Machines</a></li>
+                <li class=""><a href="/machines/new"><i class="fa fa-circle-o"></i>New Machine</a></li>
+            </ul>
+        </li>
+        <li class="treeview">
+            <a href="#">
+                <i class="glyphicons classic_hammer"></i> <span>Production</span> <i class="fa fa-angle-left pull-right"> </i>
+            </a>
+            <ul class="treeview-menu">
+                <li class=""><a href="/machines"><i class="fa fa-circle-o"></i></a></li>
 
             </ul>
         </li>

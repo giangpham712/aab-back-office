@@ -36,6 +36,7 @@ table#products h3,
 table#materials h3,
 table#expenses h3,
 table#boms h3,
+table#machines h3,
 table#orders h3 {
     font-size: 16px;
     color: #000;

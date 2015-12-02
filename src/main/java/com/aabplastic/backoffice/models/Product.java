@@ -86,6 +86,11 @@ public class Product {
     @Column(name = "default_bill_id")
     private long defaultBillOfMaterialsId;
 
+    // Production
+
+    @Column(name = "paint_per_unit_weight")
+    private long paintPerUnitWeight;
+
     public long getId() {
         return id;
     }
@@ -276,5 +281,13 @@ public class Product {
 
     public void setDefaultBillOfMaterialsId(long defaultBillOfMaterialsId) {
         this.defaultBillOfMaterialsId = defaultBillOfMaterialsId;
+    }
+
+    public long getPaintPerUnitWeight() {
+        return paintPerUnitWeight;
+    }
+
+    public void setPaintPerUnitWeight(long paintPerUnitWeight) {
+        this.paintPerUnitWeight = paintPerUnitWeight;
     }
 }

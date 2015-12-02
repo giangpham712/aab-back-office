@@ -74,7 +74,7 @@
                 <tr>
                     <th></th>
                     <th>Machine</th>
-                    <th></th>
+                    <th>Status</th>
                     <th style="width: 120px">Action</th>
                 </tr>
                 </thead>
@@ -86,7 +86,7 @@
                     <td class="machine">
                         <a href="{{ '/machines/edit/' +  machine.id }}"><h3 ng-bind="machine.name"></h3></a>
                     </td>
-                    <td><span ng-bind=""></span></td>
+                    <td><span ng-bind="machine.status"></span></td>
                     <td>
                         <div class="btn-group">
                             <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
