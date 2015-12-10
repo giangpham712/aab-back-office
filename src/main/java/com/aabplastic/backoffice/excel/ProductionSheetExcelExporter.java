@@ -39,8 +39,6 @@ public class ProductionSheetExcelExporter {
             rollNumbers[i] = i + 1;
         }
 
-
-
         final int[] index = {0};
 
         List<ProductionSheetOrderItem> oldList = productionSheetOrderItems.stream().filter(x -> x != null).collect(Collectors.toList());
@@ -61,7 +59,7 @@ public class ProductionSheetExcelExporter {
                     copy.setRollNumbers(ArrayUtils.clone(item.getRollNumbers()));
 
                     for (int j = 0; j < copy.getRollNumbers().length; j++) {
-                        copy.getRollNumbers()[j] = copy.getRollNumbers()[j] + 100 * 1;
+                        copy.getRollNumbers()[j] = copy.getRollNumbers()[j] + 100 * i;
                     }
                 }
             }
