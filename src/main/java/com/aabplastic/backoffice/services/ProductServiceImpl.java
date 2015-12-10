@@ -68,6 +68,12 @@ public class ProductServiceImpl implements ProductService {
         updated.setThickness(product.getThickness());
         updated.setWidth(product.getWidth());
 
+        updated.setMasterBatchAmount(product.getMasterBatchAmount());   // Master Batch Amount
+        updated.setMasterBatchCode(product.getMasterBatchCode());
+        updated.setInkCode(product.getInkCode());
+        updated.setInkAmount(product.getInkAmount());
+        updated.setPaintPerUnitWeight(product.getPaintPerUnitWeight());
+
         Date now = new Date();
         updated.setUpdatedAt(now);
 

@@ -1,6 +1,8 @@
 package com.aabplastic.backoffice.excel.models;
 
 import com.aabplastic.backoffice.models.Order;
+import com.aabplastic.backoffice.models.OrderItem;
+import com.aabplastic.backoffice.models.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ProductionSheetOrderItem {
@@ -31,6 +33,10 @@ public class ProductionSheetOrderItem {
     private int[] rollNumbers;
 
     private Order order;
+
+    private OrderItem orderItem;
+
+    private Product product;
 
     public void setProductionSheetOrder(ProductionSheetOrder productionSheetOrder) {
         this.productionSheetOrder = productionSheetOrder;
@@ -166,6 +172,22 @@ public class ProductionSheetOrderItem {
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public void setOrderItem(OrderItem item) {
+        this.orderItem = item;
+    }
+
+    public OrderItem getOrderItem() {
+        return orderItem;
     }
 }
 

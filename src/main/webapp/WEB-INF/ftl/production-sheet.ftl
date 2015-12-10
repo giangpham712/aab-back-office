@@ -23,7 +23,8 @@
 
 <@layout.admin sidebar_class="sidebar-collapse" content_header_title="${headerTitle}" stylesheets=stylesheets top_scripts=top_scripts bottom_scripts=bottom_scripts ng_app="orders">
 <div class="row clearfix" ng-controller="OrderProductionSheetCtrl">
-    <form name="orderProductionSheetForm" action="{{ '/orders/productionsheet/' + order.id }}" class="clearfix" method="POST">
+    <form name="orderProductionSheetForm" action="{{ '/orders/productionsheet/' + order.id }}" class="clearfix"
+          method="POST">
 
         <div class="col-xs-12">
             <div class="margin-bottom-20">
@@ -59,6 +60,10 @@
                             ng-class="{'active': $index == 0}">
                             <a href="#tab_{{item.productId}}" aria-controls="home" role="tab" data-toggle="tab">{{item.productName}}</a>
                         </li>
+                        <li role="presentation">
+                            <a href="#tab_summary" aria-controls="" role="tab" data-toggle="tab" style="color: #72afd2">Order
+                                summary</a>
+                        </li>
                     </ul>
 
                     <div class="tab-content">
@@ -72,22 +77,27 @@
                                     <label>Spec: </label>
                                     <span>{{item.thickness | number}} x {{item.width | number}} / {{item.blowingWidth | number}} x {{item.length | number}}</span>
                                 </p>
+
                                 <p>
                                     <label>Thickness: </label>
                                     <span>{{item.thickness | number}} MM</span>
                                 </p>
+
                                 <p>
                                     <label>Width: </label>
                                     <span>{{item.width}} MM</span>
                                 </p>
+
                                 <p>
                                     <label>Length: </label>
                                     <span>{{item.length}} MM</span>
                                 </p>
+
                                 <p>
                                     <label>Gusset: </label>
                                     <span>{{item.gusset}} MM</span>
                                 </p>
+
                                 <p>
                                     <label>Emboss: </label>
                                     <span>{{item.emboss}}</span>
@@ -99,26 +109,93 @@
                                     <label>Weight per metre: </label>
                                     <span>{{item.weightPerLengthUnit | number}} G/M</span>
                                 </p>
+
                                 <p>
                                     <label>Length per roll: </label>
                                     <span>{{item.lengthPerRoll}} M</span>
                                 </p>
+
                                 <p>
                                     <label>Weight per roll: </label>
                                     <span>{{item.weightPerRoll | number}} KG</span>
                                 </p>
+
                                 <p>
                                     <label>Total rolls: </label>
                                     <span>{{item.totalRolls}} ROLLS</span>
                                 </p>
+
                                 <p>
                                     <label>Total weight: </label>
                                     <span>{{item.totalWeight | number}} KG</span>
                                 </p>
+
                                 <p>
                                     <label>Total blowing weight: </label>
                                     <span>{{item.totalBlowingWeight | number}} KG</span>
                                 </p>
+                            </div>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane clearfix" id="tab_summary">
+                            <div class="clearfix" style="border-bottom: 1px solid #ccc;"
+                                 ng-repeat="item in productionSheetOrder.productionSheetOrderItems">
+                                <div class="col-md-12 margin-bottom-10">
+                                    <h4>{{item.product.name}}</h4>
+                                </div>
+                                <div class="col-md-6 margin-bottom-20">
+                                    <p>
+                                        <label>Film Color: </label>
+                                        <span>{{item.orderItem.filmColor}}</span>
+                                    </p>
+                                    <p>
+                                        <label>Master Batch Code: </label>
+                                        <span>{{item.product.masterBatchCode}}</span>
+                                    </p>
+                                    <p>
+                                        <label>Master Batch Amount: </label>
+                                        <span>{{item.product.masterBatchAmount}}</span>
+                                    </p>
+                                    <p>
+                                        <label>Ink Code: </label>
+                                        <span>{{item.product.inkCode}}</span>
+                                    </p>
+                                    <p>
+                                        <label>Ink Amount: </label>
+                                        <span>{{item.product.inkAmount}}</span>
+                                    </p>
+                                    <p>
+                                        <label>Packaging: </label>
+                                        <span>{{item.product.packaging}}</span>
+                                    </p>
+                                    <p>
+                                        <label>Pieces per outerbag: </label>
+                                        <span>{{item.orderItem.piecesPerOuterbag}}</span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6 margin-bottom-20">
+                                    <p>
+                                        <label>Layer of Carton Box: </label>
+                                        <span>{{item.product.cartonBoxLayer}}</span>
+                                    </p>
+                                    <p>
+                                        <label>Carton Length: </label>
+                                        <span>{{item.product.cartonLength}}</span>
+                                    </p>
+                                    <p>
+                                        <label>Carton Width: </label>
+                                        <span>{{item.product.cartonWidth}}</span>
+                                    </p>
+                                    <p>
+                                        <label>Carton Height: </label>
+                                        <span>{{item.product.cartonHeight}}</span>
+                                    </p>
+                                    <p>
+                                        <label>Number of boxes: </label>
+                                        <span>{{item.orderItem.totalCartons}}</span>
+                                    </p>
+
+                                </div>
                             </div>
                         </div>
                     </div>

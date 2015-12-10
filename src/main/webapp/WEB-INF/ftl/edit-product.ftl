@@ -82,6 +82,10 @@
                         <a href data-target="#production" aria-controls="bill_of_materials" role="tab"
                            data-toggle="tab">Production</a>
                     </li>
+                    <li role="presentation">
+                        <a href data-target="#carton_box" aria-controls="carton_box" role="tab"
+                           data-toggle="tab">Carton box</a>
+                    </li>
                 </ul>
                 <div class="tab-content" ng-cloak>
                     <div class="tab-pane clearfix active" id="product_information">
@@ -227,6 +231,56 @@
                             <label class="small">Paint per KG</label>
                             <input type="text" class="form-control" placeholder="Paint per KG"
                                    ng-model="product.painPerUnitWeight">
+                        </div>
+
+                        <div class="col-md-3" style="margin-bottom: 10px">
+                            <label class="small">Master Batch code</label>
+                            <input type="text" class="form-control" placeholder="Master Batch code"
+                                   ng-model="product.masterBatchCode">
+                        </div>
+
+                        <div class="col-md-3" style="margin-bottom: 10px">
+                            <label class="small">Master Batch amount</label>
+                            <input type="text" class="form-control" placeholder="Master Batch amount"
+                                   ng-model="product.masterBatchAmount">
+                        </div>
+
+                        <div class="col-md-3" style="margin-bottom: 10px">
+                            <label class="small">Ink code</label>
+                            <input type="text" class="form-control" placeholder="Ink code"
+                                   ng-model="product.inkCode">
+                        </div>
+
+                        <div class="col-md-3" style="margin-bottom: 10px">
+                            <label class="small">Ink amount</label>
+                            <input type="text" class="form-control" placeholder="Ink amount"
+                                   ng-model="product.inkAmount">
+                        </div>
+                    </div>
+
+                    <div class="tab-pane clearfix" id="carton_box">
+                        <div class="col-md-3" style="margin-bottom: 10px">
+                            <label class="small">Layer of Carton Box</label>
+                            <input type="text" class="form-control" placeholder="Layer of Carton Box"
+                                   ng-model="product.cartonBoxLayer">
+                        </div>
+
+                        <div class="col-md-3" style="margin-bottom: 10px">
+                            <label class="small">Carton Length</label>
+                            <input type="text" class="form-control" placeholder="Carton Length"
+                                   ng-model="product.cartonLength">
+                        </div>
+
+                        <div class="col-md-3" style="margin-bottom: 10px">
+                            <label class="small">Carton Width</label>
+                            <input type="text" class="form-control" placeholder="Carton Width"
+                                   ng-model="product.cartonWidth">
+                        </div>
+
+                        <div class="col-md-3" style="margin-bottom: 10px">
+                            <label class="small">Carton Height</label>
+                            <input type="text" class="form-control" placeholder="Carton Height"
+                                   ng-model="product.cartonHeight">
                         </div>
                     </div>
                 </div>

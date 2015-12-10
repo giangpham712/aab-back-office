@@ -89,7 +89,32 @@ public class Product {
     // Production
 
     @Column(name = "paint_per_unit_weight")
-    private long paintPerUnitWeight;
+    private double paintPerUnitWeight;
+
+    @Column(name = "master_batch_code")
+    private String masterBatchCode;
+
+    @Column(name = "master_batch_amount")
+    private double masterBatchAmount;
+
+    @Column(name = "ink_code")
+    private String inkCode;
+
+    @Column(name = "ink_amount")
+    private double inkAmount;
+
+    // Carton box
+    @Column(name = "carton_box_layer")
+    private double cartonBoxLayer;
+
+    @Column(name = "carton_length")
+    private double cartonLength;
+
+    @Column(name = "carton_width")
+    private double cartonWidth;
+
+    @Column(name = "carton_height")
+    private double cartonHeight;
 
     public long getId() {
         return id;
@@ -283,11 +308,79 @@ public class Product {
         this.defaultBillOfMaterialsId = defaultBillOfMaterialsId;
     }
 
-    public long getPaintPerUnitWeight() {
+    public double getPaintPerUnitWeight() {
         return paintPerUnitWeight;
     }
 
-    public void setPaintPerUnitWeight(long paintPerUnitWeight) {
+    public String getMasterBatchCode() {
+        return masterBatchCode;
+    }
+
+    public void setMasterBatchCode(String masterBatchCode) {
+        this.masterBatchCode = masterBatchCode;
+    }
+
+    public double getMasterBatchAmount() {
+        return masterBatchAmount;
+    }
+
+    public void setMasterBatchAmount(long masterBatchAmount) {
+        this.masterBatchAmount = masterBatchAmount;
+    }
+
+    public String getInkCode() {
+        return inkCode;
+    }
+
+    public void setInkCode(String inkCode) {
+        this.inkCode = inkCode;
+    }
+
+    public void setPaintPerUnitWeight(double paintPerUnitWeight) {
         this.paintPerUnitWeight = paintPerUnitWeight;
+    }
+
+    public void setMasterBatchAmount(double masterBatchAmount) {
+        this.masterBatchAmount = masterBatchAmount;
+    }
+
+    public double getInkAmount() {
+        return inkAmount;
+    }
+
+    public void setInkAmount(double inkAmount) {
+        this.inkAmount = inkAmount;
+    }
+
+    public double getCartonBoxLayer() {
+        return cartonBoxLayer;
+    }
+
+    public void setCartonBoxLayer(double cartonBoxLayer) {
+        this.cartonBoxLayer = cartonBoxLayer;
+    }
+
+    public double getCartonLength() {
+        return cartonLength;
+    }
+
+    public void setCartonLength(double cartonLength) {
+        this.cartonLength = cartonLength;
+    }
+
+    public double getCartonWidth() {
+        return cartonWidth;
+    }
+
+    public void setCartonWidth(double cartonWidth) {
+        this.cartonWidth = cartonWidth;
+    }
+
+    public double getCartonHeight() {
+        return cartonHeight;
+    }
+
+    public void setCartonHeight(double cartonHeight) {
+        this.cartonHeight = cartonHeight;
     }
 }

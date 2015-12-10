@@ -243,6 +243,8 @@ public class OrdersController {
             productionSheetOrderItem.setTotalBlowingWeight(String.valueOf(totalBlowingWeight));
             productionSheetOrderItem.setTotalRolls(String.valueOf(totalRolls));
 
+            productionSheetOrderItem.setOrderItem(item);
+            productionSheetOrderItem.setProduct(productMap.get(item.getProductId()));
 
             return productionSheetOrderItem;
 
