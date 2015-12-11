@@ -38,7 +38,9 @@ angular.module("products")
 
         $scope.deleteProduct = function (product) {
             var confirmDelete = confirm("Are you sure you want to delete this product?");
-            if (!confirmDelete) { return; }
+            if (!confirmDelete) {
+                return;
+            }
 
             Products.one(product.id).remove().then(function (response) {
                 NotificationService.notifySuccess("Order deleted successfully");
@@ -67,12 +69,44 @@ angular.module("products")
 
 
         $scope.$watch("product.length", function (value, oldValue) {
-           console.log(value, oldValue);
+            if (value == oldValue) {
+                return;
+            }
+
+            $scope.product.cartonLength = parseInt($scope.product.length) + 15;
+            console.log(value, $scope.product.cartonLength);
+        });
+
+        $scope.$watch("product.width", function (value, oldValue) {
+            if (value == oldValue) {
+                return;
+            }
+
+            $scope.product.cartonWidth = parseInt($scope.product.width) + 15;
+            console.log(value, $scope.product.cartonWidth);
+        });
+
+        $scope.$watch(function() {
+
+            var actualThickness = calculateActualThickness($scope.product.thickness);
+            return  actualThickness * 4 * $scope.product.piecesPerCarton + 15;
+
+        }, function (value, oldValue) {
+
+            if (value == oldValue) {
+                return;
+            }
+
+            var actualThickness = calculateActualThickness($scope.product.thickness);
+            $scope.product.cartonHeight = value;
+            console.log(actualThickness, $scope.product.piecesPerCarton, $scope.product.cartonHeight);
         });
 
         $scope.deleteProduct = function (product) {
             var confirmDelete = confirm("Are you sure you want to delete this product?");
-            if (!confirmDelete) { return; }
+            if (!confirmDelete) {
+                return;
+            }
 
             Products.one(product.id).remove().then(function (response) {
                 NotificationService.notifySuccess("Order deleted successfully");
@@ -122,5 +156,18 @@ angular.module("products")
                 return;
 
             }
+        }
+
+        function calculateActualThickness(thickness) {
+            var tolerance;
+            if (thickness < 0.013) {
+                tolerance = 0;
+            } else if (thickness < 0.014) {
+                tolerance = 2;
+            } else {
+                tolerance = 5;
+            }
+
+            return (100 - tolerance) * thickness / 100;
         }
     }]);

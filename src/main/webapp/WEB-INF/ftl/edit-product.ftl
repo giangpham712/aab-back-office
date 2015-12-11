@@ -266,19 +266,19 @@
                         </div>
 
                         <div class="col-md-3" style="margin-bottom: 10px">
-                            <label class="small">Carton Length</label>
+                            <label class="small">Carton Length (mm)</label>
                             <input type="text" class="form-control" placeholder="Carton Length"
                                    ng-model="product.cartonLength">
                         </div>
 
                         <div class="col-md-3" style="margin-bottom: 10px">
-                            <label class="small">Carton Width</label>
+                            <label class="small">Carton Width (mm)</label>
                             <input type="text" class="form-control" placeholder="Carton Width"
                                    ng-model="product.cartonWidth">
                         </div>
 
                         <div class="col-md-3" style="margin-bottom: 10px">
-                            <label class="small">Carton Height</label>
+                            <label class="small">Carton Height (mm)</label>
                             <input type="text" class="form-control" placeholder="Carton Height"
                                    ng-model="product.cartonHeight">
                         </div>
