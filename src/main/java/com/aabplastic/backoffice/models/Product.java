@@ -156,14 +156,6 @@ public class Product {
         this.deleted = deleted;
     }
 
-    public Date getDeletedAt() {
-        return deletedAt;
-    }
-
-    public void setDeletedAt(Date deletedAt) {
-        this.deletedAt = deletedAt;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -178,6 +170,14 @@ public class Product {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public double getLength() {
@@ -312,6 +312,10 @@ public class Product {
         return paintPerUnitWeight;
     }
 
+    public void setPaintPerUnitWeight(double paintPerUnitWeight) {
+        this.paintPerUnitWeight = paintPerUnitWeight;
+    }
+
     public String getMasterBatchCode() {
         return masterBatchCode;
     }
@@ -324,7 +328,7 @@ public class Product {
         return masterBatchAmount;
     }
 
-    public void setMasterBatchAmount(long masterBatchAmount) {
+    public void setMasterBatchAmount(double masterBatchAmount) {
         this.masterBatchAmount = masterBatchAmount;
     }
 
@@ -334,14 +338,6 @@ public class Product {
 
     public void setInkCode(String inkCode) {
         this.inkCode = inkCode;
-    }
-
-    public void setPaintPerUnitWeight(double paintPerUnitWeight) {
-        this.paintPerUnitWeight = paintPerUnitWeight;
-    }
-
-    public void setMasterBatchAmount(double masterBatchAmount) {
-        this.masterBatchAmount = masterBatchAmount;
     }
 
     public double getInkAmount() {

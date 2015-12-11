@@ -65,8 +65,21 @@ angular.module("products")
 
         $scope.boms = ViewData.boms;
 
-        $scope.deleteProduct = function (product) {
 
+        $scope.$watch("product.length", function (value, oldValue) {
+           console.log(value, oldValue);
+        });
+
+        $scope.deleteProduct = function (product) {
+            var confirmDelete = confirm("Are you sure you want to delete this product?");
+            if (!confirmDelete) { return; }
+
+            Products.one(product.id).remove().then(function (response) {
+                NotificationService.notifySuccess("Order deleted successfully");
+                window.location.href = "/orders"
+            }, function (error) {
+                NotificationService.notifySuccess("Order cannot be deleted");
+            });
         }
 
         $scope.setActive = function (product) {
