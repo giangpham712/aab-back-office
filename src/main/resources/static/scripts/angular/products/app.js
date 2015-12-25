@@ -29,7 +29,9 @@ angular.module("products")
         }
 
         $scope.pageChanged = function (page) {
-            console.log(page);
+            $scope.page = page;
+            
+            $scope.loadOrders();
         }
 
         $scope.viewProduct = function (product) {
