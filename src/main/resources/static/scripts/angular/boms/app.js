@@ -103,7 +103,7 @@ angular.module("boms")
                 var material = materialMap[newItem.materialId];
 
                 if (material == null) {
-                    console.log("Please select a material");
+                    alert("Please select a material");
                     return;
                 }
 

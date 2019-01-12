@@ -7,7 +7,7 @@
 <#assign top_scripts>
 <script>
     //<![CDATA[
-    window.ViewData = {products: ${products}, totalProducts: ${totalProducts}, totalPages: ${totalPages}};
+    window.ViewData = {products: ${products}, totalProducts: ${totalProducts}, totalPages: ${totalPages}, limit: ${limit}};
     //]]>
 </script>
 </#assign>
@@ -79,7 +79,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr dir-paginate="product in products | itemsPerPage: 10" total-items="{{totalProducts}}"
+                <tr dir-paginate="product in products | itemsPerPage: 20" total-items="{{totalProducts}}"
                     pagination-id="product">
                     <td class="select">
                         <input type="checkbox">

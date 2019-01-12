@@ -11,6 +11,7 @@ public class ProductionSheetOrderItem {
     private ProductionSheetOrder productionSheetOrder;
 
     private String thickness;
+    private String actualThickness;
 
     private String width;
 
@@ -52,6 +53,14 @@ public class ProductionSheetOrderItem {
 
     public void setThickness(String thickness) {
         this.thickness = thickness;
+    }
+
+    public String getActualThickness() {
+        return actualThickness;
+    }
+
+    public void setActualThickness(String actualThickness) {
+        this.actualThickness = actualThickness;
     }
 
     public String getWidth() {

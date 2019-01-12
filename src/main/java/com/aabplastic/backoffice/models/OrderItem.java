@@ -16,6 +16,9 @@ public class OrderItem {
     @Column(name = "thickness", nullable = false)
     private double thickness;
 
+    @Column(name = "actual_thickness", nullable = false)
+    private double actualThickness;
+
     @Column(name = "blowing_width", nullable = false)
     private double blowingWidth;
 
@@ -111,6 +114,14 @@ public class OrderItem {
 
     public void setThickness(double thickness) {
         this.thickness = thickness;
+    }
+
+    public double getActualThickness() {
+        return actualThickness;
+    }
+
+    public void setActualThickness(double actualThickness) {
+        this.actualThickness = actualThickness;
     }
 
     public double getBlowingWidth() {

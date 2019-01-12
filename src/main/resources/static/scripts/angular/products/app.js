@@ -30,8 +30,8 @@ angular.module("products")
 
         $scope.pageChanged = function (page) {
             $scope.page = page;
-            
-            $scope.loadOrders();
+
+            $scope.loadProducts();
         }
 
         $scope.viewProduct = function (product) {
@@ -55,7 +55,7 @@ angular.module("products")
 
 
 angular.module("products")
-    .controller("EditProductCtrl", ["$scope", "$rootScope", "$location", "Products", "NotificationService", function ($scope, $rootScope, $location, Products, NotificationService) {
+    .controller("EditProductCtrl", ["$scope", "$rootScope", "$location", "Products", "ModalService",  "NotificationService", function ($scope, $rootScope, $location, Products, ModalService, NotificationService) {
 
         $scope.product = ViewData.product;
         $scope.mode = ViewData.mode;
@@ -69,6 +69,9 @@ angular.module("products")
 
         $scope.boms = ViewData.boms;
 
+        Products.one($scope.product.id).all("readings").getList().then(function (response) {
+            $scope.product.readings = response.plain();
+        })
 
         $scope.$watch("product.length", function (value, oldValue) {
             if (value == oldValue) {
@@ -111,10 +114,10 @@ angular.module("products")
             }
 
             Products.one(product.id).remove().then(function (response) {
-                NotificationService.notifySuccess("Order deleted successfully");
-                window.location.href = "/orders"
+                NotificationService.notifySuccess("Product deleted successfully");
+                window.location.href = "/products"
             }, function (error) {
-                NotificationService.notifySuccess("Order cannot be deleted");
+                NotificationService.notifySuccess("Product cannot be deleted");
             });
         }
 
@@ -158,6 +161,85 @@ angular.module("products")
                 return;
 
             }
+        }
+
+        // Readings
+
+        $scope.showNewReading = function () {
+
+            $scope.reading = {
+                $isNew: true,
+                $index: -1,
+                value: 0,
+                error: {}
+            };
+
+            ModalService.showModal("edit_reading");
+
+            return true;
+        }
+
+        $scope.showEditReading = function (index) {
+
+            var reading = $scope.product.readings[index];
+
+            $scope.reading = angular.copy(reading);
+            $scope.reading.$isNew = false;
+            $scope.reading.$index = index;
+
+            ModalService.showModal("edit_reading");
+
+            return true;
+        }
+
+        $scope.saveReading = function () {
+
+            $rootScope.pageLoading = true;
+
+            if ($scope.reading.$isNew) {
+
+                Products.one($scope.product.id).all("readings").post($scope.reading).then(function (response) {
+                    console.log(response);
+                    var created = response.plain();
+                    $scope.product.readings.push(created);
+                    $rootScope.pageLoading = false;
+                    ModalService.closeModal("edit_reading");
+                    NotificationService.notifySuccess("Reading created successfully");
+
+                }, function (error) {
+
+                });
+
+            } else {
+
+                Products.one($scope.product.id).one("readings", $scope.reading.id).customPUT($scope.reading).then(function (response) {
+                    var updated = response.plain();
+
+                    $scope.product.readings[$scope.reading.$index] = updated;
+
+                    $rootScope.pageLoading = false;
+                    ModalService.closeModal("edit_reading");
+
+                    NotificationService.notifySuccess("Reading updated successfully");
+
+                }, function (error) {
+
+                });
+            }
+        }
+
+        $scope.deleteReading = function (index) {
+            var confirmDelete = confirm("Are you sure you want to delete this reading?");
+            if (!confirmDelete) {
+                return;
+            }
+
+            Products.one($scope.product.id).one("readings", $scope.product.readings[index].id).remove().then(function (response) {
+                $scope.product.readings.splice(index, 1);
+                NotificationService.notifySuccess("Reading deleted successfully");
+            }, function (error) {
+                NotificationService.notifySuccess("Reading cannot be deleted");
+            });
         }
 
         function calculateActualThickness(thickness) {

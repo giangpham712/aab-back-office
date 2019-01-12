@@ -2,7 +2,9 @@ package com.aabplastic.backoffice.services;
 
 import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.models.Product;
+import com.aabplastic.backoffice.models.ProductionReading;
 import com.aabplastic.backoffice.repositories.ProductRepository;
+import com.aabplastic.backoffice.repositories.ProductionReadingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +19,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ProductionReadingRepository readingRepository;
 
     @Override
     public Product getProductById(long id) {
@@ -74,6 +79,8 @@ public class ProductServiceImpl implements ProductService {
         updated.setInkAmount(product.getInkAmount());
         updated.setPaintPerUnitWeight(product.getPaintPerUnitWeight());
 
+        updated.setRecycleRate(product.getRecycleRate());
+
         Date now = new Date();
         updated.setUpdatedAt(now);
 
@@ -110,5 +117,26 @@ public class ProductServiceImpl implements ProductService {
         return products;
     }
 
+    @Override
+    public Iterable<ProductionReading> listReadingsByProductId(long id) {
+        Iterable<ProductionReading> readings = readingRepository.findByProductId(id);
+        return readings;
+    }
 
+    @Override
+    public ProductionReading createReading(long id, ProductionReading reading) {
+        Date now = new Date();
+
+        reading.setCreatedAt(now);
+        reading.setUpdatedAt(now);
+        reading.setProductId(id);
+
+        ProductionReading created = readingRepository.save(reading);
+        return created;
+    }
+
+    @Override
+    public void deleteReading(long id) {
+        readingRepository.delete(id);
+    }
 }

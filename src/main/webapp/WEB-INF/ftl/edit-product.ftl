@@ -70,13 +70,11 @@
                 <ul class="nav nav-tabs">
                     <li role="presentation" class="active">
                         <a href data-target="#product_information" aria-controls="product_information" role="tab"
-                           data-toggle="tab">Product
-                            information</a>
+                           data-toggle="tab">Product nformation</a>
                     </li>
                     <li role="presentation">
                         <a href data-target="#bill_of_materials" aria-controls="bill_of_materials" role="tab"
-                           data-toggle="tab">Bills
-                            of materials</a>
+                           data-toggle="tab">Bill of materials</a>
                     </li>
                     <li role="presentation">
                         <a href data-target="#production" aria-controls="bill_of_materials" role="tab"
@@ -85,6 +83,14 @@
                     <li role="presentation">
                         <a href data-target="#carton_box" aria-controls="carton_box" role="tab"
                            data-toggle="tab">Carton box</a>
+                    </li>
+                    <li role="presentation">
+                        <a href data-target="#readings" aria-controls="readings" role="tab"
+                           data-toggle="tab">Readings</a>
+                    </li>
+                    <li role="presentation">
+                        <a href data-target="#variables" aria-controls="variables" role="tab"
+                           data-toggle="tab">Variables</a>
                     </li>
                 </ul>
                 <div class="tab-content" ng-cloak>
@@ -283,6 +289,50 @@
                                    ng-model="product.cartonHeight">
                         </div>
                     </div>
+
+                    <div class="tab-pane clearfix" id="readings">
+                        <div class="col-md-6" style="margin-bottom: 10px">
+                            <div class="clearfix margin-bottom-20">
+                                <div class="row clearfix">
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-default" ng-click="showNewReading()">Add reading</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <table class="table table-simple table-bordered" width="100%">
+                                <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 50px">#</th>
+                                    <th style="width: 150px">Value</th>
+                                    <th class="text-right" style="width: 120px">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="reading in product.readings">
+                                    <td>{{$index + 1}}</td>
+                                    <td style="width: 150px"><span style="line-height: 34px">{{reading.value | number:2}}</span></td>
+                                    <td class="text-right">
+                                        <a href="javascript:void(0)" ng-click="deleteReading($index)">Delete</a>
+                                    </td>
+                                </tr>
+                                <tr ng-show="!product.readings || product.readings.length == 0">
+                                    <td colspan="6">
+                                        No readings
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane clearfix" id="variables">
+                        <div class="col-md-3" style="margin-bottom: 10px">
+                            <label class="small">Recycle rate</label>
+                            <input type="text" class="form-control" placeholder="Recycle rate"
+                                   ng-model="product.recycleRate">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div style="height: 150px;"></div>
@@ -300,5 +350,6 @@
             </div>
         </div>
     </form>
+    <#include "partials/modal-edit-reading.ftl">
 </div>
 </@layout.admin>

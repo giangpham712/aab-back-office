@@ -116,6 +116,9 @@ public class Product {
     @Column(name = "carton_height")
     private double cartonHeight;
 
+    @Column(name = "recycle_rate")
+    private double recycleRate;
+
     public long getId() {
         return id;
     }
@@ -378,5 +381,13 @@ public class Product {
 
     public void setCartonHeight(double cartonHeight) {
         this.cartonHeight = cartonHeight;
+    }
+
+    public double getRecycleRate() {
+        return recycleRate;
+    }
+
+    public void setRecycleRate(double recycleRate) {
+        this.recycleRate = recycleRate;
     }
 }

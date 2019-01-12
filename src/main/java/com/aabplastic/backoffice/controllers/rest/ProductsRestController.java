@@ -2,6 +2,7 @@ package com.aabplastic.backoffice.controllers.rest;
 
 import com.aabplastic.backoffice.exceptions.ResourceNotFoundException;
 import com.aabplastic.backoffice.models.Product;
+import com.aabplastic.backoffice.models.ProductionReading;
 import com.aabplastic.backoffice.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -96,6 +97,41 @@ public class ProductsRestController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id) {
         productService.delete(id);
+
+    }
+
+    /***
+     * Get all production readings for a product
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/{id}/readings", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public Iterable<ProductionReading> listReadings(@PathVariable long id) {
+        return productService.listReadingsByProductId(id);
+    }
+
+    /***
+     * Create production reading for a product
+     * @param id
+     * @param reading
+     * @return
+     */
+    @RequestMapping(value = "/{id}/readings", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.OK)
+    public ProductionReading createReading(@PathVariable long id, @RequestBody @Valid ProductionReading reading) {
+        return productService.createReading(id, reading);
+    }
+
+    /***
+     * Delete a specific reading
+     *
+     * @return
+     */
+    @RequestMapping(value = "/{id}/readings/{readingId}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteReading(@PathVariable long id, @PathVariable long readingId) {
+        productService.deleteReading(readingId);
 
     }
 }

@@ -208,6 +208,8 @@ public class OrdersController {
         productionSheetOrder.setOrderNumber(order.getOrderNumber());
         productionSheetOrder.setProductionSheetOrderItems(order.getItems().stream().map(item -> {
 
+            Product product = productMap.get(item.getProductId());
+
             ProductionSheetOrderItem productionSheetOrderItem = new ProductionSheetOrderItem();
 
             productionSheetOrderItem.setProductionSheetOrder(productionSheetOrder);
@@ -217,21 +219,25 @@ public class OrdersController {
             NumberFormat formatter1 = new DecimalFormat("#0.000");
             NumberFormat formatter2 = new DecimalFormat("#0.00");
 
+            double gusset = (item.getBlowingWidth() - item.getWidth()) / 2;
+            double actualThickness = calculateActualThickness(item.getThickness());
+
             productionSheetOrderItem.setThickness(formatter1.format(item.getThickness()));
+            productionSheetOrderItem.setActualThickness(formatter1.format(actualThickness));
             productionSheetOrderItem.setWidth(String.valueOf((int) item.getWidth()));
             productionSheetOrderItem.setBlowingWidth(String.valueOf((int) item.getBlowingWidth()));
             productionSheetOrderItem.setLength(String.valueOf((int) item.getLength()));
             productionSheetOrderItem.setEmboss(item.getEmboss());
-
-            double gusset = (item.getBlowingWidth() - item.getWidth()) / 2;
-            double actualThickness = calculateActualThickness(item.getThickness());
 
             double weightPerLengthUnit = actualThickness * item.getBlowingWidth() * 2 * 9 / 10;
             int lengthPerRoll = getLengthPerRoll(weightPerLengthUnit);
             double weightPerRoll = weightPerLengthUnit * lengthPerRoll / 1000;
             double unitWeight = (item.getWidth() + gusset * 2) * item.getLength() * 0.09 * actualThickness * 2 / 110 ;
             double totalWeight = unitWeight * item.getQuantity() / 1000;
-            double totalBlowingWeight = totalWeight * 1.16;
+
+            double recycleRate = product.getRecycleRate() == 0 ? 1.16 : product.getRecycleRate();
+
+            double totalBlowingWeight = totalWeight * recycleRate;
             int totalRolls = (int) Math.ceil(totalBlowingWeight / weightPerRoll);
 
             productionSheetOrderItem.setGusset(String.valueOf(gusset));
@@ -244,7 +250,7 @@ public class OrdersController {
             productionSheetOrderItem.setTotalRolls(String.valueOf(totalRolls));
 
             productionSheetOrderItem.setOrderItem(item);
-            productionSheetOrderItem.setProduct(productMap.get(item.getProductId()));
+            productionSheetOrderItem.setProduct(product);
 
             return productionSheetOrderItem;
 

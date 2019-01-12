@@ -7,3 +7,6 @@ bower_components
 .gradle
 temp/*
 .DS_Store
+AABBackOffice.iml
+AABBackOffice.ipr
+AABBackOffice.iws

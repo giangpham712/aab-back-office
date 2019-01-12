@@ -84,6 +84,11 @@
                                 </p>
 
                                 <p>
+                                    <label>Actual thickness: </label>
+                                    <span>{{item.actualThickness | number}} MM</span>
+                                </p>
+
+                                <p>
                                     <label>Width: </label>
                                     <span>{{item.width}} MM</span>
                                 </p>

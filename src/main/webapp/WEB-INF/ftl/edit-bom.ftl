@@ -57,7 +57,6 @@
                 <div class="tab-content" ng-cloak>
                     <div class="tab-pane clearfix active" id="materials">
 
-
                         <div class="clearfix margin-bottom-20">
                             <div class="row clearfix">
                                 <div class="col-md-4">
